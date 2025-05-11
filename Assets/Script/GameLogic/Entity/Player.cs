@@ -2,20 +2,19 @@ using UnityEngine;
 
 namespace Miner.GameLogic
 {
-    public class Player
+    public class Player:BaseEntity
     {
         public PlayerController playCtrl;
-        public GameObject go;
-        public int Id { get; set; }
-        public string Name { get; set; }
-        public int Level { get; set; }
-        public int Exp { get; set; }
-        public int Gold { get; set; }
-        public int Diamond { get; set; }
-        public Player(GameObject go)
+      
+        public override string GetPrefabPath()
+        {
+            return ResConst.playerPath;
+        }
+
+        public Player()
         {
             playCtrl = go.AddComponent<PlayerController>();
-            this.go = go;
+            go.AddComponent<PlayerCollisionComp>();
         }
 
         public void ExitGame()
@@ -23,9 +22,5 @@ namespace Miner.GameLogic
          
         }
 
-        public void SetPosition(Vector3 pos)
-        {
-            go.transform.position = pos;
-        }
     }
 }

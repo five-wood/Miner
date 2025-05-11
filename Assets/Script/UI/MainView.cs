@@ -17,7 +17,7 @@ namespace Miner.UI
 
         private void StartGame()
         {
-            CombatMgr.Instance().LoadGame();
+            CombatMgr.Instance().LoadGame(1);
         }   
 
         private void ExitGame()

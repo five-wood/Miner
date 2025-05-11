@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Miner.GameLogic;
 
 public class Driver : MonoBehaviour
 {
@@ -13,6 +14,6 @@ public class Driver : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        CombatMgr.Instance().UpdateGame(Time.deltaTime);
     }
 }
