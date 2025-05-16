@@ -8,12 +8,14 @@ namespace Miner.GameLogic
         void Start()
         {
             Collider collider = gameObject.GetComponent<Collider>();
-            if(collider == null)
+            Rigidbody rigid = gameObject.GetComponent<Rigidbody>(); ;
+            if (collider == null)
             {
                 collider = gameObject.AddComponent<BoxCollider>();
-                gameObject.AddComponent<Rigidbody>();
+                rigid = gameObject.AddComponent<Rigidbody>();
             }
             collider.isTrigger = true;
+            rigid.useGravity = false;
         }
 
         private void OnTriggerEnter(Collider other)

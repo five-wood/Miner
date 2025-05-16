@@ -56,7 +56,7 @@ namespace Miner.GameLogic
 
         public void UpdateGame(float deltaTime)
         {
-            if(isGameOver||this.config == null)
+            if(!IsPlayingGame())
             {
                 return;
             }
@@ -70,6 +70,11 @@ namespace Miner.GameLogic
             {
                 entity.Value.Update(deltaTime);
             }
+        }
+
+        public bool IsPlayingGame()
+        {
+            return !(isGameOver || this.config == null);
         }
 
         public void BeginNewRound()
@@ -153,6 +158,14 @@ namespace Miner.GameLogic
             {
                 entity.Destroy();
                 entityDict.Remove(entityId);
+            }
+        }
+
+        public void CatchItem(Vector3 targetPos)
+        {
+            if(IsPlayingGame())
+            {
+                player.Catch(targetPos);
             }
         }
     }

@@ -15,5 +15,6 @@ public class Driver : MonoBehaviour
     void Update()
     {
         CombatMgr.Instance().UpdateGame(Time.deltaTime);
-    }
+        InputMgr.Instance().Update();
+;    }
 }
