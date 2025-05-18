@@ -6,6 +6,7 @@ namespace Miner.GameLogic
     {
         public Vector3 targetPos;
         public float speed = 10;
+        public bool beCaught = false;
 
         public FollowComp followComp;
 
@@ -21,7 +22,7 @@ namespace Miner.GameLogic
         public override void Update(float deltaTime)
         {
             base.Update(deltaTime);
-            if(followComp != null)
+            if(followComp != null && !beCaught)
             {
                 followComp.UpdateDelta(deltaTime);
             }
@@ -35,5 +36,12 @@ namespace Miner.GameLogic
                 followComp.SetSpeed(speed);
             }
         }
+
+        public void OnBeCaught()
+        {
+            Debug.Log("OnBeCaught "+Id);
+            beCaught = true;
+        }
+        
     }
 }

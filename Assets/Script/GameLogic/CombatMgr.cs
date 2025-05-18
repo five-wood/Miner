@@ -135,6 +135,7 @@ namespace Miner.GameLogic
 
         public void ExitGame()
         {
+            isGameOver = true;
             Debug.Log("Exit Game");
             //销毁游戏节点
             player.ExitGame();
@@ -153,6 +154,7 @@ namespace Miner.GameLogic
 
         public void HitPlayer(int entityId)
         {
+            Debug.Log("Hit Player "+entityId);
             BaseEntity entity = GetEntityByID(entityId);
             if(entity != null)
             {
@@ -161,13 +163,41 @@ namespace Miner.GameLogic
             }
         }
 
-        public void CatchItem(Vector3 targetPos)
+        public void TryCatchItem(Vector3 targetPos)
         {
             if(IsPlayingGame())
             {
                 player.Catch(targetPos);
             }
         }
+
+        public void OnSuccessCatch(int entityId)
+        {
+            Debug.Log("OnSuccessCatch");
+            MoveableEntity entity = GetEntityByID(entityId) as MoveableEntity;
+            if(entity != null)
+            {
+                player.OnSuccessCatch(entityId);
+            }
+        }
+
+        public void OnProtectSuccess(int entityId)
+        {
+            //保护成功
+            MoveableEntity entity = GetEntityByID(entityId) as MoveableEntity;
+            if(entity != null)
+            {
+                entity.Destroy();
+                entityDict.Remove(entityId);
+            }
+        }
+
+        public void ProtectPlayer()
+        {
+            player.Protect();
+        }
+
+
     }
 
 }

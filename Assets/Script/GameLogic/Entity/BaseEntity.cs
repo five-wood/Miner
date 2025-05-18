@@ -62,7 +62,6 @@ namespace Miner.GameLogic
         {
             GameObject.Destroy(go);
         }
-
         public virtual void Update(float deltaTime){}
     }
 }

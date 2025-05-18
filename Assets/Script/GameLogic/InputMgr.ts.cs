@@ -19,10 +19,14 @@ namespace Miner.GameLogic
             if (Input.GetMouseButtonDown(0))
             {
                 Vector3 screenPos = Input.mousePosition;
-                screenPos.z = -1* Camera.main.transform.position.z;  // 设定与摄像机的距离
+                screenPos.z = -1* Camera.main.transform.position.z;  
                 Vector3 worldPos = Camera.main.ScreenToWorldPoint(screenPos);
                 Debug.Log("click worldPos " + worldPos.ToString());
-                CombatMgr.Instance().CatchItem(worldPos);
+                CombatMgr.Instance().TryCatchItem(worldPos);
+            }
+            if (Input.GetMouseButtonDown(1))
+            {
+                CombatMgr.Instance().ProtectPlayer();
             }
         }
         
