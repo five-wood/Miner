@@ -3,6 +3,7 @@ using UnityEngine;
 using Unity.Mathematics;
 using System;
 using System.Collections.Generic;
+using Miner.UI;
 namespace Miner.GameLogic
 {
     public class CombatMgr
@@ -24,6 +25,18 @@ namespace Miner.GameLogic
             new Vector3(-anchorX, -anchorY, 0),
         };
 
+
+        private MainView _mainView;
+        
+        public MainView mainView{
+            get{
+                if(_mainView == null)
+                {
+                    _mainView = GameObject.Find("Canvas/MainView").GetComponent<MainView>();
+                }
+                return _mainView;
+            }
+        }
         public Dictionary<int, BaseEntity> entityDict = new Dictionary<int, BaseEntity>();
 
         public GameObject sceneGo{
@@ -70,6 +83,17 @@ namespace Miner.GameLogic
             {
                 entity.Value.Update(deltaTime);
             }
+            if(mainView != null)
+            {
+                //更新血条
+                mainView.HpSlider.value = Math.Max(0, player.hp)/100.0f;
+                //更新积分
+                mainView.pointText.text = string.Format("point：{0}", Math.Max(0, player.point));  
+            }
+            if(player.hp<=0)
+            {
+                OnGameOver();
+            }
         }
 
         public bool IsPlayingGame()
@@ -98,15 +122,22 @@ namespace Miner.GameLogic
             int random = UnityEngine.Random.Range(0, 60);
             if(random < 20)
             {
-                entity = new Coactive();
+                if(random < 10)
+                {
+                    entity = new FatMushroom();
+                }
+                else
+                {
+                    entity = new TallMushroom();
+                }
             }
             else if(random<40)
             {
-                entity = new Threat();
+                entity = new ToxicVine();
             }
             else
             {
-                entity = new Reward();
+                entity = new LuckyGrass();
             }
             entityDict.Add(entity.Id, entity);
             return entity;
@@ -132,8 +163,7 @@ namespace Miner.GameLogic
             entityDict.Add(player.Id, player);
         }
 
-
-        public void ExitGame()
+        public void OnGameOver()
         {
             isGameOver = true;
             Debug.Log("Exit Game");
@@ -145,6 +175,10 @@ namespace Miner.GameLogic
             }
             entityDict.Clear();
             Resources.UnloadUnusedAssets();
+            if(mainView != null)
+            {
+                mainView.OnGameOver(false, player.hp>0);
+            }
         }
 
         public BaseEntity GetEntityByID(int id)
@@ -158,6 +192,7 @@ namespace Miner.GameLogic
             BaseEntity entity = GetEntityByID(entityId);
             if(entity != null)
             {
+                player.OnHit(entity as MoveableEntity);
                 entity.Destroy();
                 entityDict.Remove(entityId);
             }
@@ -196,7 +231,6 @@ namespace Miner.GameLogic
         {
             player.Protect();
         }
-
 
     }
 

@@ -4,7 +4,9 @@ namespace Miner.GameLogic
     {
         public static string playerPath = "perfab/char/player";
         public static string threatPath = "perfab/char/threatItem";
-        public static string coactivePath = "perfab/char/coactiveItem";
+        public static string fatMushroom = "perfab/char/fatMushroom";
+        public static string tallMushroom = "perfab/char/tallMushroom";
+
         public static string rewardPath = "perfab/char/rewardItem";
 
     }

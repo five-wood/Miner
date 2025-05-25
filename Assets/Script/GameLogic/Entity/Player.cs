@@ -17,6 +17,9 @@ namespace Miner.GameLogic
         public HookCollisionComp hookCollisionComp;
 
         public int catchEntityId = 0;
+
+        public float hp = 100;
+        public int point = 0;
          
         public override string GetPrefabPath()
         {
@@ -131,7 +134,7 @@ namespace Miner.GameLogic
             {
                 angle = -angle;
             }
-            Debug.LogError("dir="+dir+" angle="+angle);
+            // Debug.LogError("dir="+dir+" angle="+angle);
             hookHead.transform.localEulerAngles = new Vector3(0, 0, angle);
         }
 
@@ -148,7 +151,15 @@ namespace Miner.GameLogic
                 Vector3 playerPos = go.transform.position;
                 totalCatchTime = Vector3.Distance(targetHookPos, playerPos) / HOOK_MOVE_SPEED;
                 catchDuration = 0;
+                //生成积分
+                point += entity.GeneratePoint();
             }
+        }
+
+        public void OnHit(MoveableEntity entity)
+        {
+            float damage = entity.GenerateHp();
+            hp -= damage;
         }
 
         public void Protect()

@@ -11,6 +11,9 @@ public class EntityUtils
         if (collider == null)
         {
             collider = go.AddComponent<BoxCollider>();
+        }
+        if(rigid == null)
+        {
             rigid = go.AddComponent<Rigidbody>();
         }
         collider.isTrigger = true;

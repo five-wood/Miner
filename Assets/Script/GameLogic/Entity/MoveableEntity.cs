@@ -42,6 +42,17 @@ namespace Miner.GameLogic
             Debug.Log("OnBeCaught "+Id);
             beCaught = true;
         }
+
+        public virtual float GenerateHp()
+        {
+            return 0;
+        }
+
+        public virtual int GeneratePoint()
+        {
+            return 0;
+        }
+
         
     }
 }

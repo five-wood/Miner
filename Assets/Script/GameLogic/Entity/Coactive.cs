@@ -6,7 +6,7 @@ namespace Miner.GameLogic
     {
         public override string GetPrefabPath()
         {
-            return ResConst.coactivePath;
+            return ResConst.fatMushroom;
         }
         
     }

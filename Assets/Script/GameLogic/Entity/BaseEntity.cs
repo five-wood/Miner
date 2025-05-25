@@ -18,11 +18,11 @@ namespace Miner.GameLogic
                 return go.GetComponent<IDComp>().id;
             }
         }
-        public string Name { get; set; }
-        public int Level { get; set; }
-        public int Exp { get; set; }
-        public int Gold { get; set; }
-        public int Diamond { get; set; }
+        // public string Name { get; set; }
+        // public int Level { get; set; }
+        // public int Exp { get; set; }
+        // public int Gold { get; set; }
+        // public int Diamond { get; set; }
 
         public virtual string GetPrefabPath()
         {
@@ -56,7 +56,6 @@ namespace Miner.GameLogic
         {
             return go.transform.position;
         }
-
 
         public void Destroy()
         {
