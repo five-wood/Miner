@@ -117,7 +117,17 @@ namespace Miner.GameLogic
             hookCollisionComp.Enable();
             SetHookRotation();
         }
-
+        public void Protect(Vector3 pos)
+        {
+            //保护
+            if(this.shieldComp != null)
+            {
+                Vector3 playerPos = go.transform.position;
+                Vector3 dir = (pos - playerPos).normalized;
+                Vector3 tmpPos = playerPos + dir * HOOK_CATCH_RADIUS;
+                this.shieldComp.Protect(tmpPos);
+            }
+        }
         //设置钩子位置
         public void SetHookPos(Vector3 pos)
         {
@@ -178,13 +188,5 @@ namespace Miner.GameLogic
             hp = Mathf.Clamp(hp+damage, 0, 100);
         }
 
-        public void Protect()
-        {
-            //保护
-            if(this.shieldComp != null)
-            {
-                this.shieldComp.Protect();
-            }
-        }
     }
 }

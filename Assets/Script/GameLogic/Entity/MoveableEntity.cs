@@ -34,6 +34,7 @@ namespace Miner.GameLogic
             if(followComp != null)
             {
                 followComp.SetSpeed(speed);
+                followComp.targetPos = pos;
             }
         }
 
@@ -53,6 +54,16 @@ namespace Miner.GameLogic
             return 0;
         }
 
-        
+        //被击飞
+        public void BeHitAway(Vector3 targetPos)
+        {
+            if(followComp != null)
+            {
+                followComp.SetSpeed(speed*2);
+                followComp.targetPos = targetPos;
+                delayDestoryTime = 3.0f;
+            }
+        }
+
     }
 }

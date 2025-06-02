@@ -3,13 +3,22 @@ namespace Miner.GameLogic
 {
     public class FollowComp:MonoBehaviour
     {
-        public Vector3 targetPos;
+        private Vector3 _targetPos;
+        public Vector3 targetPos{
+            get{
+                return _targetPos;
+            }
+            set{
+                _targetPos = value;
+            }
+        }
         public float speed = 10;
 
         public void SetSpeed(float speed)
         {
             this.speed = speed;
         }
+
         public void UpdateDelta(float deltaTime)
         {
             if(targetPos != null)

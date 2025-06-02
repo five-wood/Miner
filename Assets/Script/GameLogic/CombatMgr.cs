@@ -4,6 +4,7 @@ using Unity.Mathematics;
 using System;
 using System.Collections.Generic;
 using Miner.UI;
+using Unity.VisualScripting;
 namespace Miner.GameLogic
 {
     public class CombatMgr
@@ -67,6 +68,7 @@ namespace Miner.GameLogic
             CreatePlayer();
         }
 
+        private List<int> _destroyList = new List<int>();
         public void UpdateGame(float deltaTime)
         {
             if(!IsPlayingGame())
@@ -79,9 +81,26 @@ namespace Miner.GameLogic
                 this.round++;
                 this.BeginNewRound();
             }
-            foreach(var entity in entityDict)
+            _destroyList.Clear();
+            foreach(var entityKV in entityDict)
             {
-                entity.Value.Update(deltaTime);
+                BaseEntity entity = entityKV.Value;
+                entity.Update(deltaTime);
+                if(entity.delayDestoryTime > 0)
+                {
+                    entity.delayDestoryTime -= deltaTime;
+                    if(entity.delayDestoryTime <= 0)
+                    {
+                        entity.delayDestoryTime = 0;
+                        _destroyList.Add(entityKV.Key);
+                    }
+                }
+
+            }
+            for(int i = 0; i < _destroyList.Count; i++)
+            {
+                entityDict[_destroyList[i]].Destroy();
+                entityDict.Remove(_destroyList[i]);
             }
             if(mainView != null)
             {
@@ -195,11 +214,12 @@ namespace Miner.GameLogic
             {
                 player.OnHit(entity as MoveableEntity);
                 entity.Destroy();
-                entityDict.Remove(entityId);
+                if(entityDict.ContainsKey(entityId))
+                {
+                    entityDict.Remove(entityId);
+                }
             }
         }
-
-
 
         public void TryCatchItem(Vector3 targetPos)
         {
@@ -207,6 +227,10 @@ namespace Miner.GameLogic
             {
                 player.Catch(targetPos);
             }
+        }
+        public void ProtectPlayer(Vector3 pos)
+        {
+            player.Protect(pos);
         }
 
         public void OnSuccessCatch(int entityId)
@@ -225,15 +249,18 @@ namespace Miner.GameLogic
             MoveableEntity entity = GetEntityByID(entityId) as MoveableEntity;
             if(entity != null)
             {
-                entity.Destroy();
-                entityDict.Remove(entityId);
+                Vector3 playerPos = player.GetPosition();
+                Vector3 entityPos = entity.GetPosition();
+                float x = entityPos.x>playerPos.x?1:-1;
+                float y = entityPos.y>playerPos.y?1:-1;
+                Vector3 pos = playerPos+new Vector3(x*100, y*100, entityPos.z);
+                entity.BeHitAway(pos);
+                // entity.Destroy();
+                // entityDict.Remove(entityId);
             }
         }
 
-        public void ProtectPlayer()
-        {
-            player.Protect();
-        }
+
 
     }
 

@@ -4,6 +4,8 @@ namespace Miner.GameLogic
 {
     public class BaseEntity
     {
+        public float delayDestoryTime = 0f;
+
         public BaseEntity()
         {
             LoadPrefab();
