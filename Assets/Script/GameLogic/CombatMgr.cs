@@ -16,8 +16,8 @@ namespace Miner.GameLogic
         public float gameTime = 0;
         public int round = 0;
 
-        public static float anchorX = -10.71f;
-        public static float anchorY = 5.1f;
+        public static float anchorX = -48.2f;
+        public static float anchorY = 26.2f;
         public static List<Vector3> itemBornPos = new List<Vector3>(){
             new Vector3(anchorX, anchorY, 0),
             new Vector3(-anchorX, anchorY, 0),
@@ -87,6 +87,7 @@ namespace Miner.GameLogic
             {
                 //更新血条
                 mainView.HpSlider.value = Math.Max(0, player.hp)/100.0f;
+                // Debug.Log("HpSlider.value="+mainView.HpSlider.value);
                 //更新积分
                 mainView.pointText.text = string.Format("point：{0}", Math.Max(0, player.point));  
             }
@@ -198,6 +199,8 @@ namespace Miner.GameLogic
             }
         }
 
+
+
         public void TryCatchItem(Vector3 targetPos)
         {
             if(IsPlayingGame())
@@ -208,7 +211,7 @@ namespace Miner.GameLogic
 
         public void OnSuccessCatch(int entityId)
         {
-            Debug.Log("OnSuccessCatch");
+            // Debug.Log("OnSuccessCatch");
             MoveableEntity entity = GetEntityByID(entityId) as MoveableEntity;
             if(entity != null)
             {

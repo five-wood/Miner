@@ -2,22 +2,41 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EntityUtils 
+namespace Miner.GameLogic
 {
-    public static Collider CreateCollider(GameObject go)
+    public class EntityUtils 
     {
-        Collider collider = go.GetComponent<Collider>();
-        Rigidbody rigid = go.GetComponent<Rigidbody>(); ;
-        if (collider == null)
+        public static Collider CreateCollider(GameObject go)
         {
-            collider = go.AddComponent<BoxCollider>();
+            Collider collider = go.GetComponent<Collider>();
+            Rigidbody rigid = go.GetComponent<Rigidbody>(); ;
+            if (collider == null)
+            {
+                collider = go.AddComponent<BoxCollider>();
+            }
+            if(rigid == null)
+            {
+                rigid = go.AddComponent<Rigidbody>();
+            }
+            collider.isTrigger = true;
+            rigid.useGravity = false;
+            return collider;
         }
-        if(rigid == null)
+
+        public static bool IsThreat(BaseEntity entity)
         {
-            rigid = go.AddComponent<Rigidbody>();
+            return entity is Threat;
         }
-        collider.isTrigger = true;
-        rigid.useGravity = false;
-        return collider;
+
+        public static bool IsCoactive(BaseEntity entity)
+        {
+            return entity is Coactive;
+        }
+
+        public static bool IsReward(BaseEntity entity)
+        {
+            return entity is Reward;
+        }
     }
 }
+

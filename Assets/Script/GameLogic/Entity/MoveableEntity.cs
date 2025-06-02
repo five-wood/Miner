@@ -5,7 +5,7 @@ namespace Miner.GameLogic
     public class MoveableEntity:BaseEntity
     {
         public Vector3 targetPos;
-        public float speed = 10;
+        public float speed = 50;
         public bool beCaught = false;
 
         public FollowComp followComp;

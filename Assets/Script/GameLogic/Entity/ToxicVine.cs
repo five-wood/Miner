@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace Miner.GameLogic
 {
-    public class ToxicVine:Coactive
+    public class ToxicVine:Threat
     {
         public override string GetPrefabPath()
         {
@@ -18,5 +18,6 @@ namespace Miner.GameLogic
         {
             return -20;
         }
+
     }
 }

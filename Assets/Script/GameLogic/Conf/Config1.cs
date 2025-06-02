@@ -6,5 +6,6 @@ namespace Miner.GameLogic
         {
             level = 1;
         }
+
     }
 }

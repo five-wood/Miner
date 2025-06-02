@@ -1,3 +1,5 @@
+using System;
+using Unity.VisualScripting;
 using UnityEngine;
 
 namespace Miner.GameLogic
@@ -7,8 +9,8 @@ namespace Miner.GameLogic
         public PlayerController playCtrl;
         public LineRenderer hookLine;
         public GameObject hookHead;
-        public float HOOK_MOVE_SPEED = 4f;
-        public float HOOK_CATCH_RADIUS = 5;   //半径
+        public float HOOK_MOVE_SPEED = 15f;
+        public float HOOK_CATCH_RADIUS = 25;   //半径
         public Vector3 targetHookPos;
         public float catchDuration = 0;
         public float totalCatchTime = 0;
@@ -48,6 +50,7 @@ namespace Miner.GameLogic
 
         public override void Update(float deltaTime)
         {
+            //抓到道具
             if(catchEntityId != 0)
             {
                 catchDuration += deltaTime;
@@ -55,13 +58,13 @@ namespace Miner.GameLogic
                 Vector3 playerPos = go.transform.position;
                 Vector3 hookPos = Vector3.Lerp(targetHookPos, playerPos, t);
                 SetHookPos(hookPos);
-                if(t>=1) //抓到手
+                BaseEntity catchEntity = CombatMgr.Instance().GetEntityByID(catchEntityId);
+                if(catchEntity != null)
                 {
-                    MoveableEntity entity = CombatMgr.Instance().GetEntityByID(catchEntityId) as MoveableEntity;
-                    if(entity != null)
-                    {
-                        entity.Destroy();
-                    }
+                    catchEntity.go.transform.localPosition = new Vector3(2,0,0);
+                }
+                if(t>=1) //到手
+                {
                     catchEntityId = 0;
                     totalCatchTime = 0;
                     catchDuration = 0;
@@ -146,20 +149,33 @@ namespace Miner.GameLogic
             {
                 hookCollisionComp.Disable();
                 catchEntityId = entityId;
+                // entity.go.GetComponent<Collider>().enabled = false;
                 entity.go.transform.SetParent(hookHead.transform);
+                entity.go.transform.localPosition = new Vector3(2,0,0);
                 targetHookPos = entity.go.transform.position;
                 Vector3 playerPos = go.transform.position;
                 totalCatchTime = Vector3.Distance(targetHookPos, playerPos) / HOOK_MOVE_SPEED;
                 catchDuration = 0;
-                //生成积分
-                point += entity.GeneratePoint();
             }
         }
 
         public void OnHit(MoveableEntity entity)
         {
-            float damage = entity.GenerateHp();
-            hp -= damage;
+            if(!EntityUtils.IsReward(entity)||catchEntityId == entity.Id)
+            {
+                float hpChanged = entity.GenerateHp();
+                hp = Mathf.Clamp(hp+hpChanged, 0, 100);
+                point += Math.Max(entity.GeneratePoint(),0);
+            }
+            if(entity!=null)
+            {
+                entity.Destroy();
+            }
+        }
+
+        public void BeHurt(float damage)
+        {
+            hp = Mathf.Clamp(hp+damage, 0, 100);
         }
 
         public void Protect()
