@@ -59,7 +59,7 @@ namespace Miner.GameLogic
             return go.transform.position;
         }
 
-        public void Destroy()
+        public virtual void Destroy()
         {
             GameObject.Destroy(go);
         }

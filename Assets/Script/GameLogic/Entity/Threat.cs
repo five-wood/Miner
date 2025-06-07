@@ -23,16 +23,19 @@ namespace Miner.GameLogic
                 if(player != null)
                 {
                     float distance = Vector3.Distance(player.go.transform.position, go.transform.position);
-                    Debug.Log("distance="+distance);
                     if(distance < player.HOOK_CATCH_RADIUS)
                     {
                         //有点问题，没走进来 等待排查
                         nextCheckDuration = 0.5f;
-                        player.BeHurt(GenerateHp());
+                        IntervalHurtPlayer(player);
                     }
                 }
             }
+        }
 
+        public virtual void IntervalHurtPlayer(Player player)
+        {
+            player.BeHurt(GenerateHp());
         }
     }
 }

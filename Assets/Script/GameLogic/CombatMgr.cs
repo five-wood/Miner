@@ -108,7 +108,7 @@ namespace Miner.GameLogic
                 mainView.HpSlider.value = Math.Max(0, player.hp)/100.0f;
                 // Debug.Log("HpSlider.value="+mainView.HpSlider.value);
                 //更新积分
-                mainView.pointText.text = string.Format("point：{0}", Math.Max(0, player.point));  
+                mainView.pointText.text = string.Format("{0}", Math.Max(0, player.point));  
             }
             if(player.hp<=0)
             {

@@ -685,10 +685,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: MainView
       objectReference: {fileID: 0}
-    - target: {fileID: 5610063751894221074, guid: 61e34f7a03c9eae4fbdfe2862c5a1dd0, type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 5610063751894221075, guid: 61e34f7a03c9eae4fbdfe2862c5a1dd0, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -771,6 +767,14 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5610063751894221075, guid: 61e34f7a03c9eae4fbdfe2862c5a1dd0, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5635571045494827309, guid: 61e34f7a03c9eae4fbdfe2862c5a1dd0, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5635571045494827309, guid: 61e34f7a03c9eae4fbdfe2862c5a1dd0, type: 3}
+      propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
