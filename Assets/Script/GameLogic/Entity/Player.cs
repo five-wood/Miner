@@ -102,11 +102,11 @@ namespace Miner.GameLogic
         //抓取
         public void Catch(Vector3 targetPos)
         {
+            // Debug.Log("Catch "+targetPos + " catchDuration="+catchDuration + " totalCatchTime="+totalCatchTime);
             if (catchDuration>0 && catchDuration <= totalCatchTime)
             {
                 return;
             }
-    
             Vector3 playerPos = go.transform.position;
             Vector3 curPos = hookLine.GetPosition(1);
             Vector3 dir = (targetPos - playerPos).normalized;

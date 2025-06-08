@@ -24,6 +24,7 @@ namespace Miner.GameLogic
             if(targetPos != null)
             {
                 transform.position = Vector3.MoveTowards(transform.position, targetPos, speed * Time.deltaTime);
+                // transform.localRotation = Quaternion.identity;
             }
         }
     }

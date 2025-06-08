@@ -12,10 +12,10 @@ namespace Miner.GameLogic
         private static CombatMgr _instance;
         public Player player;
         private GameObject _sceneGo;
-        public BaseConfig config;
-        public bool isGameOver = false;
+        public bool isGameOver = true;
         public float gameTime = 0;
-        public int round = 0;
+        public int level = 1;
+        private int lastAgentIndex = -1;
 
         public static float anchorX = -48.2f;
         public static float anchorY = 26.2f;
@@ -62,9 +62,9 @@ namespace Miner.GameLogic
         {
             Debug.Log("Start Game");
             this.gameTime = 0;
-            this.round = 0;
+            this.lastAgentIndex = -1;
             this.isGameOver = false;
-            LoadConfig(level);
+            this.level = level;
             CreatePlayer();
         }
 
@@ -75,12 +75,12 @@ namespace Miner.GameLogic
             {
                 return;
             }
+
+            //检查是否需要创建新的怪物
             this.gameTime += deltaTime;
-            while(this.gameTime >= (this.round+1) * this.config.roundTime)
-            {
-                this.round++;
-                this.BeginNewRound();
-            }
+            this.CheckRound();
+            
+            //处理延迟销毁的实体
             _destroyList.Clear();
             foreach(var entityKV in entityDict)
             {
@@ -95,13 +95,14 @@ namespace Miner.GameLogic
                         _destroyList.Add(entityKV.Key);
                     }
                 }
-
             }
             for(int i = 0; i < _destroyList.Count; i++)
             {
                 entityDict[_destroyList[i]].Destroy();
                 entityDict.Remove(_destroyList[i]);
             }
+
+            //更新主界面
             if(mainView != null)
             {
                 //更新血条
@@ -110,6 +111,8 @@ namespace Miner.GameLogic
                 //更新积分
                 mainView.pointText.text = string.Format("{0}", Math.Max(0, player.point));  
             }
+
+            //血量见底，游戏结束
             if(player.hp<=0)
             {
                 OnGameOver();
@@ -118,60 +121,56 @@ namespace Miner.GameLogic
 
         public bool IsPlayingGame()
         {
-            return !(isGameOver || this.config == null);
+            return !isGameOver;
         }
 
-        public void BeginNewRound()
+        public void CheckRound()
         {
             //4条路分别创建对象
-            for(int i = 0; i < 4; i++)
+            List<AgentConfig> agentConfigs = BaseConfig.GetLevelConfig(this.level);
+            if(this.lastAgentIndex >= agentConfigs.Count-1)
             {
-                MoveableEntity item = CreateItem();
-                item.SetPosition(itemBornPos[i]);
-                if(player!=null)
-                {
-                    Vector3 targetPos = player.GetPosition();
-                    item.SetTargetPos(targetPos, UnityEngine.Random.Range(this.config.moveSpeed*0.8f, this.config.moveSpeed*1.2f));
-                }
+                // Debug.LogError("本关卡结束，所有怪物都已经创建完毕");
+                return;
+            }
+            AgentConfig agentConfig = agentConfigs[this.lastAgentIndex+1];
+            if(this.gameTime >= agentConfig.bornTime)
+            {
+                Debug.Log(this.lastAgentIndex+" Create Item "+agentConfig.agentName+" ,cnt = "+agentConfigs.Count);
+                this.lastAgentIndex++;
+                CreateItem(agentConfig);
             }
         }
 
-        public MoveableEntity CreateItem()
+        public MoveableEntity CreateItem(AgentConfig agentConfig)
         {
             MoveableEntity entity = null;
-            int random = UnityEngine.Random.Range(0, 60);
-            if(random < 20)
+            switch(agentConfig.agentName)
             {
-                if(random < 10)
-                {
+                case "Lucky grass":
+                    entity = new LuckyGrass();
+                    break;
+                case "Toxic Vine":
                     entity = new FatMushroom();
-                }
-                else
-                {
+                    break;
+                case "Tall Mushroom":
                     entity = new TallMushroom();
-                }
-            }
-            else if(random<40)
-            {
-                entity = new ToxicVine();
-            }
-            else
-            {
-                entity = new LuckyGrass();
+                    break;
+                case "Fat Mushroom":
+                    entity = new FatMushroom();
+                    break;
+                default:
+                    Debug.LogError("CreateItem error: "+agentConfig.agentName);
+                    break;
             }
             entityDict.Add(entity.Id, entity);
-            return entity;
-        }
-
-
-        public void LoadConfig(int level = 1)
-        {
-            Debug.Log("Load Config");
-            if(level == 1)
+            entity.SetPosition(itemBornPos[(int)agentConfig.posType]);
+            if(player!=null)
             {
-                this.config = new Config1();
-                this.config.InitConfig();
+                Vector3 targetPos = player.GetPosition();
+                entity.SetTargetPos(targetPos, agentConfig.speed);
             }
+            return entity;
         }
 
         public void CreatePlayer()
