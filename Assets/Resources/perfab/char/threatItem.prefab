@@ -10,7 +10,6 @@ GameObject:
   m_Component:
   - component: {fileID: 2568998324377245640}
   - component: {fileID: 6151033831009542860}
-  - component: {fileID: 1145304729594592086}
   - component: {fileID: 469384635405623047}
   m_Layer: 0
   m_Name: threatItem
@@ -86,22 +85,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!54 &1145304729594592086
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3918486503475571789}
-  serializedVersion: 2
-  m_Mass: 1
-  m_Drag: 0
-  m_AngularDrag: 0.05
-  m_UseGravity: 0
-  m_IsKinematic: 0
-  m_Interpolate: 0
-  m_Constraints: 0
-  m_CollisionDetection: 0
 --- !u!65 &469384635405623047
 BoxCollider:
   m_ObjectHideFlags: 0
