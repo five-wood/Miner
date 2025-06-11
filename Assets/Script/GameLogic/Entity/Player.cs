@@ -198,10 +198,13 @@ namespace Miner.GameLogic
             if(!EntityUtils.IsReward(entity)||catchEntityId == entity.Id)
             {
                 float hpChanged = entity.GenerateHp();
+                CombatMgr.Instance().ChangeHp(hpChanged);
                 hp = Mathf.Clamp(hp+hpChanged, 0, 100);
-                point += Math.Max(entity.GeneratePoint(),0);
+                int pointChange = entity.GeneratePoint();
+                point += Math.Max(pointChange, 0);
+                CombatMgr.Instance().ChangePoint(pointChange);
             }
-            if(entity!=null)
+            if (entity!=null)
             {
                 entity.Destroy();
             }
@@ -210,6 +213,7 @@ namespace Miner.GameLogic
         public void BeHurt(float damage)
         {
             hp = Mathf.Clamp(hp+damage, 0, 100);
+            CombatMgr.Instance().ChangeHp(damage);
         }
 
 

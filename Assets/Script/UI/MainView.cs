@@ -20,6 +20,12 @@ namespace Miner.UI
         public Text resultTxt;
         public Button againButton;
 
+        public Text hpChangeTxt;
+        public Text pointChangeTxt;
+        private Animator hpAnim;
+        private Animator pointAnim;
+
+
 
         private int _level = 1;
 
@@ -32,6 +38,8 @@ namespace Miner.UI
             beforeGo.SetActive(true);
             gamingGo.SetActive(false);
             afterGo.SetActive(false);
+            hpAnim = hpChangeTxt.gameObject.GetComponent<Animator>();
+            pointAnim = pointChangeTxt.gameObject.GetComponent<Animator>();
         }
 
         private void StartGame()
@@ -40,6 +48,8 @@ namespace Miner.UI
             beforeGo.SetActive(false);
             gamingGo.SetActive(true);
             afterGo.SetActive(false);
+            hpChangeTxt.text = "";
+            pointChangeTxt.text = "";
         }   
 
         public void ExitGame()
@@ -82,6 +92,35 @@ namespace Miner.UI
             beforeGo.SetActive(true);
             gamingGo.SetActive(false);
             afterGo.SetActive(false);
+        }
+
+        public void ChangeHp(float value)
+        {
+            if (Mathf.Approximately(value, 0)) return;
+            string str = "<color=\"#ee0000\">-{0}</color>";
+            if(value > 0)
+            {
+                str = "<color=\"#00ee00\">+{0}</color>";
+            }
+            pointChangeTxt.enabled = true;
+            hpChangeTxt.text = string.Format(str, (int)(Mathf.Abs(value)));
+            hpAnim.Play("hpJump",0,0f);
+        }
+
+        public void ChangePoint(int value)
+        {
+            if (value == 0)
+                return;
+            pointChangeTxt.enabled = true;
+            if(value>0)
+            {
+                pointChangeTxt.text = string.Format("<color=\"#00ee00\">+{0}</color>", value);
+            }
+            else
+            {
+                pointChangeTxt.text = string.Format("<color=\"#ee0000\">{0}</color>", value);
+            }
+            pointAnim.Play("pointJump",0,0f);
         }
     }
 }

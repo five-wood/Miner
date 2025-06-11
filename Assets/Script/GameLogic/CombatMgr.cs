@@ -109,13 +109,29 @@ namespace Miner.GameLogic
                 mainView.HpSlider.value = Math.Max(0, player.hp)/100.0f;
                 // Debug.Log("HpSlider.value="+mainView.HpSlider.value);
                 //更新积分
-                mainView.pointText.text = string.Format("{0}", Math.Max(0, player.point));  
+                mainView.pointText.text = string.Format("{0}", Math.Max(0, player.point));
             }
 
             //血量见底，游戏结束
-            if(player.hp<=0)
+            if (player.hp<=0)
             {
                 OnGameOver();
+            }
+        }
+
+        public void ChangeHp(float hp)
+        {
+            if (mainView != null)
+            {
+                mainView.ChangeHp(hp);
+            }
+        }
+
+        public void ChangePoint(int point)
+        {
+            if (mainView != null)
+            {
+                mainView.ChangePoint(point);
             }
         }
 
