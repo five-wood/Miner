@@ -9,6 +9,7 @@ namespace Miner.GameLogic
         public PlayerController playCtrl;
         public LineRenderer hookLine;
         public GameObject hookHead;
+        public Transform arrowTrans;
         public float HOOK_MOVE_SPEED = 15f;
         public float HOOK_CATCH_RADIUS = 25;   //半径
         public Vector3 targetHookPos;
@@ -46,6 +47,8 @@ namespace Miner.GameLogic
             //盾牌
             GameObject shield = go.transform.Find("shield").gameObject;
             shieldComp = shield.AddComponent<ShieldComp>();
+            //箭头
+            arrowTrans = go.transform.Find("arrow");
         }
 
         public override void Update(float deltaTime)
@@ -103,16 +106,8 @@ namespace Miner.GameLogic
         public void Catch(Vector3 targetPos)
         {
             // Debug.Log("Catch "+targetPos + " catchDuration="+catchDuration + " totalCatchTime="+totalCatchTime);
-            //出钩抓取中，不可重复抓
-            if (IsHookFlying())
-            {
+            if(IsCasting())
                 return;
-            }
-            //盾牌飞行中，不可出钩
-            if(this.shieldComp!=null && this.shieldComp.IsFlying())
-            {
-                return;
-            }
             Vector3 playerPos = go.transform.position;
             Vector3 curPos = hookLine.GetPosition(1);
             Vector3 dir = (targetPos - playerPos).normalized;
@@ -125,8 +120,7 @@ namespace Miner.GameLogic
         }
         public void Protect(Vector3 pos)
         {
-            //出钩抓取中，不可飞盾
-            if(IsHookFlying())
+            if(IsCasting())
                 return;
             //保护
             if(this.shieldComp != null)
@@ -136,6 +130,21 @@ namespace Miner.GameLogic
                 Vector3 tmpPos = playerPos + dir * HOOK_CATCH_RADIUS;
                 this.shieldComp.Protect(tmpPos);
             }
+        }
+        //正在出钩或正在出盾
+        public bool IsCasting()
+        {
+             //出钩抓取中，不可重复抓
+            if (IsHookFlying())
+            {
+                return true;
+            }
+            //盾牌飞行中，不可出钩
+            if(this.shieldComp!=null && this.shieldComp.IsFlying())
+            {
+                return true;
+            }
+            return false;
         }
 
         public bool IsHookFlying()
@@ -203,5 +212,20 @@ namespace Miner.GameLogic
             hp = Mathf.Clamp(hp+damage, 0, 100);
         }
 
+
+        public void AdjustArrow(Vector3 pos)
+        {
+            if(IsCasting())
+                return;
+            Vector3 playerPos = go.transform.position;
+            Vector3 dir = pos - playerPos;
+            //根据originPos和dir计算出与z轴旋转
+            float angle = Vector3.Angle(new Vector3(1,0,0), dir);
+            if(dir.y<0)
+            {
+                angle = -angle;
+            }
+            arrowTrans.localEulerAngles = new Vector3(0, 0, angle-90);
+        }
     }
 }

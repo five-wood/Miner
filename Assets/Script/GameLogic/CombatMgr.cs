@@ -136,7 +136,7 @@ namespace Miner.GameLogic
             AgentConfig agentConfig = agentConfigs[this.lastAgentIndex+1];
             if(this.gameTime >= agentConfig.bornTime)
             {
-                Debug.Log(this.lastAgentIndex+" Create Item "+agentConfig.agentName+" ,cnt = "+agentConfigs.Count);
+                //Debug.Log(this.lastAgentIndex+" Create Item "+agentConfig.agentName+" ,cnt = "+agentConfigs.Count);
                 this.lastAgentIndex++;
                 CreateItem(agentConfig);
             }
@@ -222,6 +222,7 @@ namespace Miner.GameLogic
 
         public void TryCatchItem(Vector3 targetPos)
         {
+            if(player == null) return;
             if(IsPlayingGame())
             {
                 player.Catch(targetPos);
@@ -229,7 +230,14 @@ namespace Miner.GameLogic
         }
         public void ProtectPlayer(Vector3 pos)
         {
+            if(player == null) return;
             player.Protect(pos);
+        }
+
+        public void AdjustHookArrow(Vector3 pos)
+        {
+            if(player == null) return;
+            player.AdjustArrow(pos);
         }
 
         public void OnSuccessCatch(int entityId)

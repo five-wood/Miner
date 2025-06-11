@@ -32,7 +32,17 @@ namespace Miner.GameLogic
                 Debug.Log("click worldPos " + worldPos.ToString());
                 CombatMgr.Instance().ProtectPlayer(worldPos);
             }
+            
+            checkArrow();
         }
-        
+
+        //根据鼠标位置，调整出钩的箭头
+        public void checkArrow()
+        {
+            Vector3 screenPos = Input.mousePosition;
+            screenPos.z = -1* Camera.main.transform.position.z;  
+            Vector3 worldPos = Camera.main.ScreenToWorldPoint(screenPos);
+            CombatMgr.Instance().AdjustHookArrow(worldPos);
+        }
     }
 }
