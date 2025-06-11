@@ -70,7 +70,7 @@ namespace Miner.GameLogic
 
         public void Protect(Vector3 pos)
         {
-            if(totalTime>0)
+            if(IsFlying())
             {
                 return;
             }
@@ -82,6 +82,11 @@ namespace Miner.GameLogic
             totalTime = Vector3.Distance(playerPos, targetPos) / SHIELD_MOVE_SPEED;
             Vector3 originScale = gameObject.transform.localScale;
             SetRotation(targetPos);
+        }
+
+        public bool IsFlying()
+        {
+            return totalTime>0;
         }
 
         public Vector3 GetPlayerPos()

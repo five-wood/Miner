@@ -103,7 +103,13 @@ namespace Miner.GameLogic
         public void Catch(Vector3 targetPos)
         {
             // Debug.Log("Catch "+targetPos + " catchDuration="+catchDuration + " totalCatchTime="+totalCatchTime);
-            if (catchDuration>0 && catchDuration <= totalCatchTime)
+            //出钩抓取中，不可重复抓
+            if (IsHookFlying())
+            {
+                return;
+            }
+            //盾牌飞行中，不可出钩
+            if(this.shieldComp!=null && this.shieldComp.IsFlying())
             {
                 return;
             }
@@ -119,6 +125,9 @@ namespace Miner.GameLogic
         }
         public void Protect(Vector3 pos)
         {
+            //出钩抓取中，不可飞盾
+            if(IsHookFlying())
+                return;
             //保护
             if(this.shieldComp != null)
             {
@@ -128,6 +137,12 @@ namespace Miner.GameLogic
                 this.shieldComp.Protect(tmpPos);
             }
         }
+
+        public bool IsHookFlying()
+        {
+            return catchDuration>0 && catchDuration <= totalCatchTime;
+        }
+
         //设置钩子位置
         public void SetHookPos(Vector3 pos)
         {
