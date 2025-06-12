@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -17,13 +18,18 @@ namespace Miner.GameLogic
         public float totalCatchTime = 0;
         public ShieldComp shieldComp;
 
+        SpriteRenderer modelRender;
+
         public HookCollisionComp hookCollisionComp;
 
         public int catchEntityId = 0;
 
         public float hp = 100;
         public int point = 0;
-         
+
+        public List<string> spriteNameList = new List<string> {"hero","hero_block_left","hero_block_right","hero_grab_left","hero_grab_right"};
+        public Dictionary<string, Sprite> modelSpriteDict = new Dictionary<string, Sprite>{};
+
         public override string GetPrefabPath()
         {
             return ResConst.playerPath;
@@ -34,6 +40,7 @@ namespace Miner.GameLogic
             playCtrl = go.AddComponent<PlayerController>();
             //模型
             GameObject model = go.transform.Find("model").gameObject;
+            modelRender = model.transform.Find("Square").GetComponent<SpriteRenderer>();
             model.AddComponent<PlayerCollisionComp>();
             //钩子
             hookLine = go.transform.Find("hook").GetComponent<LineRenderer>();
@@ -49,6 +56,16 @@ namespace Miner.GameLogic
             shieldComp = shield.AddComponent<ShieldComp>();
             //箭头
             arrowTrans = go.transform.Find("arrow");
+
+
+            foreach(var name in spriteNameList)
+            {
+                if(!modelSpriteDict.ContainsKey(name))
+                {
+                    Sprite sprite = Resources.Load<Sprite>(string.Format("{0}/{1}", ResConst.spriteRootPath, name));
+                    modelSpriteDict.Add(name, sprite);
+                }
+            }
         }
 
         public override void Update(float deltaTime)
@@ -72,6 +89,7 @@ namespace Miner.GameLogic
                     totalCatchTime = 0;
                     catchDuration = 0;
                     hookLine.gameObject.SetActive(false);
+                    modelRender.sprite = modelSpriteDict["hero"];
                 }
             }
             else //还没抓到道具
@@ -99,7 +117,7 @@ namespace Miner.GameLogic
 
         public void ExitGame()
         {
-         
+            modelSpriteDict.Clear();
         }
 
         //抓取
@@ -117,6 +135,14 @@ namespace Miner.GameLogic
             hookLine.gameObject.SetActive(true);
             hookCollisionComp.Enable();
             SetHookRotation();
+            if(targetHookPos.x - playerPos.x<=0)
+            {
+                modelRender.sprite = modelSpriteDict["hero_grab_left"];
+            }
+            else
+            {
+                modelRender.sprite = modelSpriteDict["hero_grab_right"];
+            }
         }
         public void Protect(Vector3 pos)
         {
@@ -129,6 +155,15 @@ namespace Miner.GameLogic
                 Vector3 dir = (pos - playerPos).normalized;
                 Vector3 tmpPos = playerPos + dir * HOOK_CATCH_RADIUS;
                 this.shieldComp.Protect(tmpPos);
+
+                if (tmpPos.x - playerPos.x <= 0)
+                {
+                    modelRender.sprite = modelSpriteDict["hero_block_left"];
+                }
+                else
+                {
+                    modelRender.sprite = modelSpriteDict["hero_block_right"];
+                }
             }
         }
         //正在出钩或正在出盾

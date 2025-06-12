@@ -9,7 +9,8 @@ public class Driver : MonoBehaviour
     void Start()
     {
         Screen.SetResolution(1920, 1080, true);
-        BaseConfig.InitAllLevel("Assets/Conf/cfg.csv");
+        string cfgPath = Application.dataPath + "/cfg.csv";
+        BaseConfig.InitAllLevel(cfgPath);
     }
 
     // Update is called once per frame

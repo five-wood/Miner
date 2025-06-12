@@ -8,5 +8,6 @@ namespace Miner.GameLogic
         public static string tallMushroom = "perfab/char/tallMushroom";
         public static string rewardPath = "perfab/char/rewardItem";
         public static string bulletPath = "perfab/char/bullet";
+        public static string spriteRootPath = "texture/game_assets";
     }
 }
