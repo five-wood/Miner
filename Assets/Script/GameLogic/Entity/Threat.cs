@@ -7,6 +7,7 @@ namespace Miner.GameLogic
         public float nextCheckDuration = 0;
         public override string GetPrefabPath()
         {
+            nextCheckDuration = config.atkInterval;
             return ResConst.threatPath;
         }
         
@@ -25,8 +26,7 @@ namespace Miner.GameLogic
                     float distance = Vector3.Distance(player.go.transform.position, go.transform.position);
                     if(distance < player.HOOK_CATCH_RADIUS)
                     {
-                        //有点问题，没走进来 等待排查
-                        nextCheckDuration = 0.5f;
+                        nextCheckDuration = config.atkInterval;
                         IntervalHurtPlayer(player);
                     }
                 }
@@ -35,7 +35,7 @@ namespace Miner.GameLogic
 
         public virtual void IntervalHurtPlayer(Player player)
         {
-            player.BeHurt(GenerateHp());
+            player.BeHurt(GenerateHp(), this);
         }
     }
 }

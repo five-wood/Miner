@@ -12,5 +12,6 @@ namespace Miner.GameLogic
         public string agentName;
         public PositionEnum posType;
         public float speed;
+        public float atkInterval;
     }
 }

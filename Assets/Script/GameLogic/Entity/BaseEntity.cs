@@ -5,6 +5,8 @@ namespace Miner.GameLogic
     public class BaseEntity
     {
         public float delayDestoryTime = 0f;
+        protected AgentConfig config;
+        public string name;
 
         public BaseEntity()
         {
@@ -19,6 +21,11 @@ namespace Miner.GameLogic
                 }
                 return go.GetComponent<IDComp>().id;
             }
+        }
+
+        public void InitConfig(AgentConfig config)
+        {
+            this.config = config;
         }
         // public string Name { get; set; }
         // public int Level { get; set; }

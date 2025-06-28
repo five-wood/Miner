@@ -78,7 +78,8 @@ namespace Miner.GameLogic
 
             //检查是否需要创建新的怪物
             this.gameTime += deltaTime;
-            this.CheckRound();
+            //Debug.LogError("deltaTime = " + deltaTime + " , gameTime " + this.gameTime + "frameCoutn "+Time.frameCount);
+            bool hadNextAgent = this.CheckRound();
             
             //处理延迟销毁的实体
             _destroyList.Clear();
@@ -112,8 +113,8 @@ namespace Miner.GameLogic
                 mainView.pointText.text = string.Format("{0}", Math.Max(0, player.point));
             }
 
-            //血量见底，游戏结束
-            if (player.hp<=0)
+            //血量见底失败,或者所有agent消失只剩玩家
+            if (player.hp<=0 || (!hadNextAgent && entityDict.Count == 1))
             {
                 OnGameOver();
             }
@@ -140,22 +141,22 @@ namespace Miner.GameLogic
             return !isGameOver;
         }
 
-        public void CheckRound()
+        public bool CheckRound()
         {
-            //4条路分别创建对象
             List<AgentConfig> agentConfigs = BaseConfig.GetLevelConfig(this.level);
             if(this.lastAgentIndex >= agentConfigs.Count-1)
             {
                 // Debug.LogError("本关卡结束，所有怪物都已经创建完毕");
-                return;
+                return false;
             }
             AgentConfig agentConfig = agentConfigs[this.lastAgentIndex+1];
             if(this.gameTime >= agentConfig.bornTime)
             {
-                //Debug.Log(this.lastAgentIndex+" Create Item "+agentConfig.agentName+" ,cnt = "+agentConfigs.Count);
+                XLogger.Info("Create Agent ["+agentConfig.agentName+"],gameTime ="+ this.gameTime+"s");
                 this.lastAgentIndex++;
                 CreateItem(agentConfig);
             }
+            return true;
         }
 
         public MoveableEntity CreateItem(AgentConfig agentConfig)
@@ -167,7 +168,7 @@ namespace Miner.GameLogic
                     entity = new LuckyGrass();
                     break;
                 case "Toxic Vine":
-                    entity = new FatMushroom();
+                    entity = new ToxicVine();
                     break;
                 case "Tall Mushroom":
                     entity = new TallMushroom();
@@ -179,6 +180,8 @@ namespace Miner.GameLogic
                     Debug.LogError("CreateItem error: "+agentConfig.agentName);
                     break;
             }
+            entity.name = agentConfig.agentName;
+            entity.InitConfig(agentConfig);
             entityDict.Add(entity.Id, entity);
             entity.SetPosition(itemBornPos[(int)agentConfig.posType]);
             if(player!=null)
@@ -201,19 +204,40 @@ namespace Miner.GameLogic
         public void OnGameOver()
         {
             isGameOver = true;
-            Debug.Log("Exit Game");
+            if(player.hp > 0)
+            {
+                XLogger.Info(string.Format("game win, run={2}, hp={0},score={1}", player.hp, player.point, this.level));
+            }
+            else
+            {
+                var agentConfigs = BaseConfig.GetLevelConfig(this.level);
+                AgentConfig config = agentConfigs[this.lastAgentIndex];
+                XLogger.Info(string.Format("player died, run={2}, hp={0}, score={1}, wave={3}", player.hp, player.point, this.level, config.wave));
+            }
+            if (mainView != null)
+            {
+                mainView.OnGameOver(false, player.hp > 0, player.point);
+            }
+            XLogger.Flush();
+        }
+
+        public void ContinueGame()
+        {
+            player.hp = 100;
+            player.point = 0;
+            isGameOver = false;
+        }
+
+        public void RealExitGame()
+        {
             //销毁游戏节点
             player.ExitGame();
-            foreach(var kv in entityDict)
+            foreach (var kv in entityDict)
             {
                 kv.Value.Destroy();
             }
             entityDict.Clear();
             Resources.UnloadUnusedAssets();
-            if(mainView != null)
-            {
-                mainView.OnGameOver(false, player.hp>0);
-            }
         }
 
         public BaseEntity GetEntityByID(int id)
@@ -223,7 +247,6 @@ namespace Miner.GameLogic
 
         public void HitPlayer(int entityId)
         {
-            Debug.Log("Hit Player "+entityId);
             BaseEntity entity = GetEntityByID(entityId);
             if(entity != null)
             {
@@ -252,6 +275,7 @@ namespace Miner.GameLogic
 
         public void AdjustHookArrow(Vector3 pos)
         {
+            if (isGameOver) return;
             if(player == null) return;
             player.AdjustArrow(pos);
         }
@@ -278,6 +302,7 @@ namespace Miner.GameLogic
                 float y = entityPos.y>playerPos.y?1:-1;
                 Vector3 pos = playerPos+new Vector3(x*100, y*100, entityPos.z);
                 entity.BeHitAway(pos);
+                XLogger.Info(string.Format(" shield-bashed the agent [{0}], pos={1}", entity.name, entityPos.ToString()));
                 // entity.Destroy();
                 // entityDict.Remove(entityId);
             }

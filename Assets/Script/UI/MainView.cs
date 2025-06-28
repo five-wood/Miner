@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using Miner.GameLogic;
+using System;
 
 namespace Miner.UI
 {
@@ -18,23 +19,32 @@ namespace Miner.UI
 
         public GameObject afterGo;
         public Text resultTxt;
-        public Button againButton;
+        public Button nextBtn;
+        public Button exitButton;
+
 
         public Text hpChangeTxt;
         public Text pointChangeTxt;
         private Animator hpAnim;
         private Animator pointAnim;
 
-
+        public GameObject winGo;
+        public Text winScoreTxt;
+        public GameObject loseGo;
+        public Text loseTimerTxt;
+        public Text loseScoreTxt;
+        private float loseTimer = 0;
+        private float winTimer = 0;
 
         private int _level = 1;
 
         public void Start()
         {
-            StartButton.onClick.AddListener(StartGame);
-            ExitButton.onClick.AddListener(ExitGame);
+            StartButton.onClick.AddListener(OnStartGame);
+            ExitButton.onClick.AddListener(OnExitGame);
             levelInputField.onValueChanged.AddListener(OnLevelInputChanged);
-            againButton.onClick.AddListener(OnAgainButtonClick);
+            nextBtn.onClick.AddListener(OnNextBtnClick);
+            exitButton.onClick.AddListener(OnExitButtonClick);
             beforeGo.SetActive(true);
             gamingGo.SetActive(false);
             afterGo.SetActive(false);
@@ -42,23 +52,34 @@ namespace Miner.UI
             pointAnim = pointChangeTxt.gameObject.GetComponent<Animator>();
         }
 
-        private void StartGame()
+        private void OnStartGame()
         {
+            StartGameByLv(1);
+        }   
+
+        private void StartGameByLv(int lv)
+        {
+            if (lv > BaseConfig.maxLevel)
+            {
+                return;
+            }
+            XLogger.Info(string.Format("========Start Game Run:{0}==========", lv));
+            this._level = lv;
             CombatMgr.Instance().LoadGame(this._level);
             beforeGo.SetActive(false);
             gamingGo.SetActive(true);
             afterGo.SetActive(false);
             hpChangeTxt.text = "";
             pointChangeTxt.text = "";
-        }   
+        }
 
-        public void ExitGame()
+        public void OnExitGame()
         {
             CombatMgr.Instance().OnGameOver();
             OnGameOver(true);
         }
 
-        public void OnGameOver(bool force, bool isWin = false)
+        public void OnGameOver(bool force, bool isWin = false, int point = 0)
         {
             if(force)
             {
@@ -72,13 +93,28 @@ namespace Miner.UI
                 gamingGo.SetActive(false);
                 afterGo.SetActive(true);
                 resultTxt.text = isWin?"You Win":"Game Over";
+                winGo.SetActive(isWin);
+                loseGo.SetActive(!isWin);
+                winTimer = 0;loseTimer = 0;
+                if (isWin)
+                {
+                    winScoreTxt.text = string.Format("({0})", point);
+                    this.nextBtn.gameObject.SetActive(false);
+                    winTimer = 60;
+                }
+                else
+                {
+                    loseScoreTxt.text = point.ToString();
+                    loseTimer = 5;
+                    loseTimerTxt.text = string.Format("{0} seconds", (int)(loseTimer+1));
+                }
             }
         }
 
         private void Destroy()
         {
-            StartButton.onClick.RemoveListener(StartGame);
-            ExitButton.onClick.RemoveListener(ExitGame);
+            StartButton.onClick.RemoveListener(OnStartGame);
+            ExitButton.onClick.RemoveListener(OnExitGame);
         }
 
         private void OnLevelInputChanged(string levelInput)
@@ -87,11 +123,27 @@ namespace Miner.UI
             _level = level>0?level:1;
         }
 
-        private void OnAgainButtonClick()
+        private void OnNextBtnClick()
+        {
+            CombatMgr.Instance().RealExitGame();
+            if(this._level == BaseConfig.maxLevel)
+            {
+                beforeGo.SetActive(true);
+                gamingGo.SetActive(false);
+                afterGo.SetActive(false);
+            }
+            else
+            {
+                this.StartGameByLv(this._level + 1);
+            }
+        }
+
+        private void OnExitButtonClick()
         {
             beforeGo.SetActive(true);
             gamingGo.SetActive(false);
             afterGo.SetActive(false);
+            CombatMgr.Instance().RealExitGame();
         }
 
         public void ChangeHp(float value)
@@ -107,20 +159,45 @@ namespace Miner.UI
             hpAnim.Play("hpJump",0,0f);
         }
 
-        public void ChangePoint(int value)
+        public void ChangePoint(int curValue)
         {
-            if (value == 0)
+            if (curValue == 0)
                 return;
             pointChangeTxt.enabled = true;
-            if(value>0)
+            if(curValue>0)
             {
-                pointChangeTxt.text = string.Format("<color=\"#00ee00\">+{0}</color>", value);
+                pointChangeTxt.text = string.Format("<color=\"#00ee00\">+{0}</color>", curValue);
             }
             else
             {
-                pointChangeTxt.text = string.Format("<color=\"#ee0000\">{0}</color>", value);
+                pointChangeTxt.text = string.Format("<color=\"#ee0000\">{0}</color>", curValue);
             }
             pointAnim.Play("pointJump",0,0f);
+        }
+
+        public void Update()
+        {
+            if (loseTimer>0)
+            {
+                loseTimer -= Time.deltaTime;
+                loseTimerTxt.text = string.Format("{0} seconds", (int)(loseTimer + 1));
+                if(loseTimer<=0) //倒计时结束，回到上一关继续玩
+                {
+                    beforeGo.SetActive(false);
+                    gamingGo.SetActive(true);
+                    afterGo.SetActive(false);
+                    CombatMgr.Instance().ContinueGame();
+                }
+            }
+            if(winTimer>0)
+            {
+                winTimer -= Time.deltaTime;
+                if(winTimer<=0)
+                {
+                    this.nextBtn.gameObject.SetActive(true);
+                }
+            }
+
         }
     }
 }

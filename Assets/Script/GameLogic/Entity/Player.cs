@@ -11,7 +11,7 @@ namespace Miner.GameLogic
         public LineRenderer hookLine;
         public GameObject hookHead;
         public Transform arrowTrans;
-        public float HOOK_MOVE_SPEED = 15f;
+        public float HOOK_MOVE_SPEED = 25f;
         public float HOOK_CATCH_RADIUS = 25;   //半径
         public Vector3 targetHookPos;
         public float catchDuration = 0;
@@ -104,7 +104,11 @@ namespace Miner.GameLogic
                     Vector3 playerPos = go.transform.position;
                     Vector3 hookPos = Vector3.Lerp(playerPos, targetHookPos, t);
                     SetHookPos(hookPos);
-
+                    //missing
+                    if(catchDuration>totalCatchTime) 
+                    {
+                        XLogger.Info(string.Format("Hook Miss"));
+                    }
                 }
                 else
                 {
@@ -225,30 +229,29 @@ namespace Miner.GameLogic
                 Vector3 playerPos = go.transform.position;
                 totalCatchTime = Vector3.Distance(targetHookPos, playerPos) / HOOK_MOVE_SPEED;
                 catchDuration = 0;
+                XLogger.Info(string.Format("catch [{0}]， pos={1}", entity.name, entity.GetPosition().ToString()));
             }
         }
 
         public void OnHit(MoveableEntity entity)
         {
-            if(!EntityUtils.IsReward(entity)||catchEntityId == entity.Id)
+            if (!EntityUtils.IsReward(entity)||catchEntityId == entity.Id)
             {
                 float hpChanged = entity.GenerateHp();
                 CombatMgr.Instance().ChangeHp(hpChanged);
                 hp = Mathf.Clamp(hp+hpChanged, 0, 100);
-                int pointChange = entity.GeneratePoint();
-                point += Math.Max(pointChange, 0);
-                CombatMgr.Instance().ChangePoint(pointChange);
-            }
-            if (entity!=null)
-            {
-                entity.Destroy();
+                int pointChanged = entity.GeneratePoint();
+                point += pointChanged;
+                CombatMgr.Instance().ChangePoint(Math.Max(point, 0));
+                XLogger.Info(string.Format("{0} hit the player, hitPos={1}, Caught={2}, hpChanged={3}, newHp={4}, scoreChanged={5}, newScore={6}", entity.name, entity.GetPosition().ToString(), catchEntityId == entity.Id, hpChanged, hp, pointChanged, point));
             }
         }
 
-        public void BeHurt(float damage)
+        public void BeHurt(float damage, BaseEntity entity)
         {
             hp = Mathf.Clamp(hp+damage, 0, 100);
             CombatMgr.Instance().ChangeHp(damage);
+            XLogger.Info(string.Format("{3} shoot the player, hpChanged={0}, newHp={1}, theatPos={2}",damage, hp, entity.GetPosition().ToString(),entity.name));
         }
 
 

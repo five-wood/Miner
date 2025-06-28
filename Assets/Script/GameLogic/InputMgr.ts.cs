@@ -21,7 +21,8 @@ namespace Miner.GameLogic
                 Vector3 screenPos = Input.mousePosition;
                 screenPos.z = -1* Camera.main.transform.position.z;  
                 Vector3 worldPos = Camera.main.ScreenToWorldPoint(screenPos);
-                Debug.Log("click worldPos " + worldPos.ToString());
+                //Debug.Log("click worldPos " + worldPos.ToString());
+                XLogger.Info("Throw the hook, clickPos =" + worldPos.ToString());
                 CombatMgr.Instance().TryCatchItem(worldPos);
             }
             if (Input.GetMouseButtonDown(1))
@@ -29,7 +30,8 @@ namespace Miner.GameLogic
                 Vector3 screenPos = Input.mousePosition;
                 screenPos.z = -1* Camera.main.transform.position.z;  
                 Vector3 worldPos = Camera.main.ScreenToWorldPoint(screenPos);
-                Debug.Log("click worldPos " + worldPos.ToString());
+                //Debug.Log("click worldPos " + worldPos.ToString());
+                XLogger.Info("Throw the Shield, clickPos = " + worldPos.ToString());
                 CombatMgr.Instance().ProtectPlayer(worldPos);
             }
             

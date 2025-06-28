@@ -15,6 +15,8 @@ namespace Miner.GameLogic
 
         private static bool hadInit = false;
 
+        public static int maxLevel = -1;
+
         //从csv文件中读取配置
         public static void InitAllLevel(string path)
         {
@@ -28,6 +30,10 @@ namespace Miner.GameLogic
             foreach(var item in data)
             {
                 int level = int.Parse(item["Run"]);
+                if(maxLevel<level)
+                {
+                    maxLevel = level;
+                }
                 if(!levelConfigs.ContainsKey(level))
                 {
                     levelConfigs[level] = new List<AgentConfig>();
@@ -39,6 +45,7 @@ namespace Miner.GameLogic
                 agentConfig.agentName = item["Agent"];
                 agentConfig.posType = GetPosEnum(item["Position"]);
                 agentConfig.speed = float.Parse(item["Speed"]);
+                agentConfig.atkInterval = float.Parse(item["Interval to Atk"]);
                 levelConfigs[level].Add(agentConfig);
             }
             //按时间排序,从早到晚
@@ -75,5 +82,7 @@ namespace Miner.GameLogic
             }
             return levelConfigs[level];
         }
+
+
     }
 }

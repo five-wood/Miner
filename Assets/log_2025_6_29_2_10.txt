@@ -1,0 +1,18 @@
+2025年6月29日-2:10:20 Throw the hook (-0.56, -17.31, 0.00)
+2025年6月29日-2:10:20 Start Game Run-1
+2025年6月29日-2:10:20 Create Agent Lucky grass,gameTime =0.0017055
+2025年6月29日-2:10:21 Throw the hook (-12.43, 13.38, 0.00)
+2025年6月29日-2:10:23 Hook Miss
+2025年6月29日-2:10:23 Create Agent Toxic Vine,gameTime =3.000333
+2025年6月29日-2:10:26 Create Agent Fat Mushroom,gameTime =6.001283
+2025年6月29日-2:10:27 Throw the hook (15.97, 5.05, 0.00)
+2025年6月29日-2:10:29 Hook Miss
+2025年6月29日-2:10:30 Throw the hook (-22.71, 11.57, 0.00)
+2025年6月29日-2:10:31 catch Lucky grass， pos=(-20.10, 10.25, 0.00)
+2025年6月29日-2:10:32 Lucky grass hit the player, hitPos=(-4.07, 2.07, 0.00), Caught=True, hpChanged=20, newHp=100, scoreChanged=20, newScore=20
+2025年6月29日-2:10:33 Throw the Shield (21.11, 10.95, 0.00)
+2025年6月29日-2:10:34  shield-bashed the agent Toxic Vine, pos=(21.07, 11.45, 0.00)
+2025年6月29日-2:10:37 Throw the hook (-19.86, -12.73, 0.00)
+2025年6月29日-2:10:38 catch Fat Mushroom， pos=(-17.50, -11.22, 0.00)
+2025年6月29日-2:10:38 Fat Mushroom hit the player, hitPos=(-4.02, -2.58, 0.00), Caught=True, hpChanged=20, newHp=100, scoreChanged=-20, newScore=0
+2025年6月29日-2:10:38 game win, run=1, hp=100,score=0

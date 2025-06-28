@@ -33,6 +33,10 @@ namespace Miner.GameLogic
             {
                 // Debug.Log("OnSuccessCatch "+idComp.id);
                 CombatMgr.Instance().OnProtectSuccess(idComp.id);
+                //打中就停止移动
+                totalTime = -1;
+                duration = 0;
+                gameObject.SetActive(false);
             }
         }
 
@@ -64,6 +68,7 @@ namespace Miner.GameLogic
                     totalTime = -1;
                     duration = 0;
                     gameObject.SetActive(false);
+                    XLogger.Info(string.Format("Shield Miss"));
                 }
             }
         }
