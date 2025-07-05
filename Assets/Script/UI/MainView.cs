@@ -50,6 +50,9 @@ namespace Miner.UI
             afterGo.SetActive(false);
             hpAnim = hpChangeTxt.gameObject.GetComponent<Animator>();
             pointAnim = pointChangeTxt.gameObject.GetComponent<Animator>();
+            hpAnim.enabled = false;
+            pointAnim.enabled = false;
+            pointChangeTxt.transform.GetChild(0).gameObject.SetActive(false);
         }
 
         private void OnStartGame()
@@ -98,7 +101,7 @@ namespace Miner.UI
                 winTimer = 0;loseTimer = 0;
                 if (isWin)
                 {
-                    winScoreTxt.text = string.Format("({0})", point);
+                    winScoreTxt.text = string.Format("{0}", point);
                     this.nextBtn.gameObject.SetActive(false);
                     winTimer = 60;
                 }
@@ -156,6 +159,7 @@ namespace Miner.UI
             }
             pointChangeTxt.enabled = true;
             hpChangeTxt.text = string.Format(str, (int)(Mathf.Abs(value)));
+            hpAnim.enabled = true;
             hpAnim.Play("hpJump",0,0f);
         }
 
@@ -172,6 +176,7 @@ namespace Miner.UI
             {
                 pointChangeTxt.text = string.Format("<color=\"#ee0000\">{0}</color>", curValue);
             }
+            pointAnim.enabled = true;
             pointAnim.Play("pointJump",0,0f);
         }
 

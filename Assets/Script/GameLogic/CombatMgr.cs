@@ -110,7 +110,7 @@ namespace Miner.GameLogic
                 mainView.HpSlider.value = Math.Max(0, player.hp)/100.0f;
                 // Debug.Log("HpSlider.value="+mainView.HpSlider.value);
                 //更新积分
-                mainView.pointText.text = string.Format("{0}", Math.Max(0, player.point));
+                mainView.pointText.text = string.Format("{0}", player.point);
             }
 
             //血量见底失败,或者所有agent消失只剩玩家
@@ -225,6 +225,30 @@ namespace Miner.GameLogic
         {
             player.hp = 100;
             player.point = 0;
+            //清除所有的agent
+            foreach(var kv in entityDict)
+            {
+                BaseEntity entity = kv.Value;
+                if(entity.Id!=player.Id)
+                {
+                    entity.Destroy();
+                }
+            }
+            entityDict.Clear();
+            entityDict.Add(player.Id, player);
+            //从当前关死亡的那一个wave开始生成agent，游戏时间也调整
+            List<AgentConfig> agentConfigs = BaseConfig.GetLevelConfig(this.level);
+            Debug.LogError(" lastAgentIndex " + lastAgentIndex + ", count " + agentConfigs.Count);
+            for (int i = lastAgentIndex; i>=0; i--)
+            {
+                //找到对应wave
+                if(i>0 && agentConfigs[i].wave != agentConfigs[i-1].wave)
+                {
+                    this.lastAgentIndex = i - 1;
+                    this.gameTime = agentConfigs[i].bornTime;
+                    break;
+                }
+            }
             isGameOver = false;
         }
 

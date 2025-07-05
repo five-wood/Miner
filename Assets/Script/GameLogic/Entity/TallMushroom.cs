@@ -16,7 +16,7 @@ namespace Miner.GameLogic
 
         public override int GeneratePoint()
         {
-            return 20;
+            return 0;
         }
         
     }
