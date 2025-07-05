@@ -355,12 +355,12 @@ namespace Miner.GameLogic
 
         public void Record()
         {
-            string Level = this.level.ToString();
-            string Wave = this.wave.ToString();
+            string Level = isGameOver? "-" : this.level.ToString();
+            string Wave = isGameOver ? "-" : this.wave.ToString();
             //string Avatar_facing = 
             //Avatar_action
             //Avatar_action_detail
-            //Avatar_health
+            float Avatar_health = player == null ? 0 : player.hp;
             //Avatar_healthchange
             //Avatar_target_type
             //Avatar_target_distance
@@ -383,6 +383,7 @@ namespace Miner.GameLogic
             string Reward_entry_direction = Enum.GetName(typeof(PositionEnum), nearestReward.config.posType);
             int Reward_entry_angle = (int)nearestReward.config.posType;
 
+            //Threat
             Threat_number
             Threat_nearest_distance
             Threat_nearest_location_x
