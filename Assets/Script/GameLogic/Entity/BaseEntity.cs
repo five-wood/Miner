@@ -5,7 +5,7 @@ namespace Miner.GameLogic
     public class BaseEntity
     {
         public float delayDestoryTime = 0f;
-        protected AgentConfig config;
+        public AgentConfig config;
         public string name;
 
         public BaseEntity()

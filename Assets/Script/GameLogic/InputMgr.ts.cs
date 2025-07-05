@@ -34,7 +34,51 @@ namespace Miner.GameLogic
                 XLogger.Info("Throw the Shield, clickPos = " + worldPos.ToString());
                 CombatMgr.Instance().ProtectPlayer(worldPos);
             }
-            
+  
+            if (Input.GetKeyDown(KeyCode.LeftControl)&& Input.GetKeyDown(KeyCode.LeftAlt) && Input.GetKeyDown(KeyCode.Q))
+            {
+                CombatMgr.Instance().Pause();
+            }
+            if (Input.GetKeyDown(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.LeftAlt))
+            {
+                if (Input.GetKeyDown(KeyCode.Alpha1))
+                {
+                    CombatMgr.Instance().ForceEnter(1);
+                }
+                else if(Input.GetKeyDown(KeyCode.Alpha2))
+                {
+                    CombatMgr.Instance().ForceEnter(2);
+                }
+                else if (Input.GetKeyDown(KeyCode.Alpha3))
+                {
+                    CombatMgr.Instance().ForceEnter(3);
+                }
+                else if (Input.GetKeyDown(KeyCode.Alpha4))
+                {
+                    CombatMgr.Instance().ForceEnter(4);
+                }
+                else if (Input.GetKeyDown(KeyCode.Alpha5))
+                {
+                    CombatMgr.Instance().ForceEnter(5);
+                }
+                else if (Input.GetKeyDown(KeyCode.Alpha6))
+                {
+                    CombatMgr.Instance().ForceEnter(6);
+                }
+                else if (Input.GetKeyDown(KeyCode.Alpha7))
+                {
+                    CombatMgr.Instance().ForceEnter(7);
+                }
+                else if (Input.GetKeyDown(KeyCode.Alpha8))
+                {
+                    CombatMgr.Instance().ForceEnter(8);
+                }
+                else if (Input.GetKeyDown(KeyCode.Alpha9))
+                {
+                    CombatMgr.Instance().ForceEnter(9);
+                }
+            }
+
             checkArrow();
         }
 

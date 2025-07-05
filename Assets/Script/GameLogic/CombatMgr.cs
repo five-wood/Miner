@@ -16,6 +16,8 @@ namespace Miner.GameLogic
         public float gameTime = 0;
         public int level = 1;
         private int lastAgentIndex = -1;
+        public int wave = 0;
+        private bool pause = false;
 
         public static float anchorX = -48.2f;
         public static float anchorY = 26.2f;
@@ -65,6 +67,8 @@ namespace Miner.GameLogic
             this.lastAgentIndex = -1;
             this.isGameOver = false;
             this.level = level;
+            this.pause = false;
+            this.wave = 0;
             CreatePlayer();
         }
 
@@ -138,7 +142,7 @@ namespace Miner.GameLogic
 
         public bool IsPlayingGame()
         {
-            return !isGameOver;
+            return !isGameOver && !pause;
         }
 
         public bool CheckRound()
@@ -155,6 +159,7 @@ namespace Miner.GameLogic
                 XLogger.Info("Create Agent ["+agentConfig.agentName+"],gameTime ="+ this.gameTime+"s");
                 this.lastAgentIndex++;
                 CreateItem(agentConfig);
+                this.wave = agentConfig.wave;
             }
             return true;
         }
@@ -223,6 +228,7 @@ namespace Miner.GameLogic
 
         public void ContinueGame()
         {
+            this.pause = false;
             player.hp = 100;
             player.point = 0;
             //清除所有的agent
@@ -264,6 +270,15 @@ namespace Miner.GameLogic
             Resources.UnloadUnusedAssets();
         }
 
+        public void Pause()
+        {
+            this.pause = !this.pause;
+        }
+        public void ForceEnter(int level)
+        {
+            this.ExitGame();
+            this.LoadGame(level);
+        }
         public BaseEntity GetEntityByID(int id)
         {
             return entityDict.ContainsKey(id)?entityDict[id]:null;
@@ -332,8 +347,100 @@ namespace Miner.GameLogic
             }
         }
 
+        public void ExitGame()
+        {
+            isGameOver = true;
+            this.RealExitGame();
+        }
 
+        public void Record()
+        {
+            string Level = this.level.ToString();
+            string Wave = this.wave.ToString();
+            //string Avatar_facing = 
+            //Avatar_action
+            //Avatar_action_detail
+            //Avatar_health
+            //Avatar_healthchange
+            //Avatar_target_type
+            //Avatar_target_distance
+            //Avatar_target_location_x
+            //Avatar_target_location_y
 
+            //当前屏幕上所有 agent 的总数
+            string Agent_number = entityDict == null ? "0" : entityDict.Count.ToString();
+            //Agent_contact = 
+            //Failure_contact
+
+            //reward 的总数量
+            BaseEntity nearestReward = NearestAgent("Lucky grass", out int rewardInCnt, out int rewardOutCnt, out float rewardNearestDis);
+            int Reward_number = (rewardInCnt + rewardOutCnt);
+            float Reward_nearest_distance = rewardNearestDis;
+            float Reward_nearest_location_x = nearestReward.GetPosition().x;
+            float Reward_nearest_location_y = nearestReward.GetPosition().y;
+            int Reward_inrange_count = rewardInCnt;
+            int Reward_outrange_count = rewardOutCnt;
+            string Reward_entry_direction = Enum.GetName(typeof(PositionEnum), nearestReward.config.posType);
+            int Reward_entry_angle = (int)nearestReward.config.posType;
+
+            Threat_number
+            Threat_nearest_distance
+            Threat_nearest_location_x
+            Threat_nearest_location_y
+            Threat_projectile_hit
+            Threat_projectile_count
+            Threat_inrange_count
+            Threat_outrange_count
+            Threat_entry_direction
+            Threat_entry_angle
+            Coactive1_number
+            Coactive1_nearest_distance
+            Coactive1_nearest_location_x
+            Coactive1_nearest_location_y
+            Coactive1_inrange_count
+            Coactive1_outrange_count
+            Coactive1_entry_direction
+            Coactive1_entry_angle
+            Coactive2_number
+            Coactive2_nearest_distance
+            Coactive2_nearest_location_x
+            Coactive2_nearest_location_y
+            Coactive2_inrange_count
+            Coactive2_outrange_count
+            Coactive2_entry_direction
+            Coactive2_entry_angle
+            Action_event_start
+            Action_event_end
+        }
+
+        private BaseEntity NearestAgent(string agentName, out int inRangeCnt, out int outRangeCnt, out float nearestDis )
+        {
+            inRangeCnt = 0;
+            outRangeCnt = 0;
+            nearestDis = 99999999;
+            if (isGameOver)
+            {
+                return null;
+            }
+            BaseEntity nearest = null;
+            foreach (var kv in entityDict)
+            {
+                BaseEntity entity = kv.Value;
+                if(entity.name == agentName)
+                {
+                    float distance = Vector3.Distance(entity.GetPosition(), player.GetPosition());
+                    if(distance<player.HOOK_CATCH_RADIUS)
+                        inRangeCnt++;
+                    else
+                        outRangeCnt++;
+                    if(distance< nearestDis)
+                    {
+                        nearest = entity;
+                    }
+                }
+            }
+            return nearest;
+        }
     }
 
 }

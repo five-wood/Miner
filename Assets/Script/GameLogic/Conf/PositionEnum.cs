@@ -2,9 +2,9 @@ namespace Miner.GameLogic
 {
     public enum PositionEnum
     {
-        TopLeft = 0,
-        TopRight = 1,
-        BottomLeft = 2,
-        BottomRight = 3,
+        TopLeft = -45,
+        TopRight = 45,
+        BottomLeft = 135,
+        BottomRight = -135,
     }
 }
