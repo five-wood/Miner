@@ -90,6 +90,8 @@ namespace Miner.GameLogic
                     catchDuration = 0;
                     hookLine.gameObject.SetActive(false);
                     modelRender.sprite = modelSpriteDict["hero"];
+                    RecordUtils.actionDetailTypes.Add(ActionResult.SuccHook);
+                    RecordUtils.actionEndTimes.Add(string.Format("hook-{0}", DateTime.Now.ToLongTimeString()));
                 }
             }
             else //还没抓到道具
@@ -107,7 +109,9 @@ namespace Miner.GameLogic
                     //missing
                     if(catchDuration>totalCatchTime) 
                     {
+                        RecordUtils.actionDetailTypes.Add(ActionResult.MissingHook);
                         XLogger.Info(string.Format("Hook Miss"));
+                        RecordUtils.actionEndTimes.Add(string.Format("hook-{0}", DateTime.Now.ToLongTimeString()));
                     }
                 }
                 else
@@ -130,6 +134,9 @@ namespace Miner.GameLogic
             // Debug.Log("Catch "+targetPos + " catchDuration="+catchDuration + " totalCatchTime="+totalCatchTime);
             if(IsCasting())
                 return;
+            RecordUtils.actionTypes.Add(ActionType.hook);
+            RecordUtils.actionFaces.Add(RecordUtils.GetPlayerFace(this));
+            RecordUtils.actionStartTimes.Add(string.Format("hook-{0}", DateTime.Now.ToLongTimeString()));
             Vector3 playerPos = go.transform.position;
             Vector3 curPos = hookLine.GetPosition(1);
             Vector3 dir = (targetPos - playerPos).normalized;
@@ -152,8 +159,11 @@ namespace Miner.GameLogic
         {
             if(IsCasting())
                 return;
+            RecordUtils.actionTypes.Add(ActionType.block);
+            RecordUtils.actionFaces.Add(RecordUtils.GetPlayerFace(this));
+            RecordUtils.actionStartTimes.Add(string.Format("block-{0}", DateTime.Now.ToLongTimeString()));
             //保护
-            if(this.shieldComp != null)
+            if (this.shieldComp != null)
             {
                 Vector3 playerPos = go.transform.position;
                 Vector3 dir = (pos - playerPos).normalized;
@@ -235,20 +245,59 @@ namespace Miner.GameLogic
 
         public void OnHit(MoveableEntity entity)
         {
-            if (!EntityUtils.IsReward(entity)||catchEntityId == entity.Id)
+            if(catchEntityId == entity.Id)
             {
-                float hpChanged = entity.GenerateHp();
-                CombatMgr.Instance().ChangeHp(hpChanged);
-                hp = Mathf.Clamp(hp+hpChanged, 0, 100);
-                int pointChanged = entity.GeneratePoint();
-                point += pointChanged;
-                CombatMgr.Instance().ChangePoint(pointChanged);
-                XLogger.Info(string.Format("{0} hit the player, hitPos={1}, Caught={2}, hpChanged={3}, newHp={4}, scoreChanged={5}, newScore={6}", entity.name, entity.GetPosition().ToString(), catchEntityId == entity.Id, hpChanged, hp, pointChanged, point));
+                RecordUtils.positiveHit.Add(entity.name);
+                CommonHitHandler(entity);
             }
+            else
+            {
+                RecordUtils.negativeHit.Add(entity.name);
+                if(EntityUtils.IsReward(entity))
+                {
+                    //do nothing
+                }
+                //被动触碰，只触发负收益
+                else if(EntityUtils.IsCoactive(entity))
+                {
+                    float hpChanged = entity.GenerateHp();
+                    if(hpChanged<0)
+                    {
+                        RecordUtils.hpChanged.Add(hpChanged);
+                        CombatMgr.Instance().ChangeHp(hpChanged);
+                        hp = Mathf.Clamp(hp + hpChanged, 0, 100);
+                    }
+                    int pointChanged = entity.GeneratePoint();
+                    if(point<0)
+                    {
+                        point += pointChanged;
+                        CombatMgr.Instance().ChangePoint(pointChanged);
+                    }
+                }
+                else
+                {
+                    CommonHitHandler(entity);
+                }
+            }
+ 
+        }
+
+        public void CommonHitHandler(MoveableEntity entity)
+        {
+            float hpChanged = entity.GenerateHp();
+            RecordUtils.hpChanged.Add(hpChanged);
+            CombatMgr.Instance().ChangeHp(hpChanged);
+            hp = Mathf.Clamp(hp + hpChanged, 0, 100);
+            int pointChanged = entity.GeneratePoint();
+            point += pointChanged;
+            CombatMgr.Instance().ChangePoint(pointChanged);
+            XLogger.Info(string.Format("{0} hit the player, hitPos={1}, Caught={2}, hpChanged={3}, newHp={4}, scoreChanged={5}, newScore={6}", entity.name, entity.GetPosition().ToString(), catchEntityId == entity.Id, hpChanged, hp, pointChanged, point));
         }
 
         public void BeHurt(float damage, BaseEntity entity)
         {
+            RecordUtils.isPlayHurt = 1;
+            RecordUtils.hpChanged.Add(damage);
             hp = Mathf.Clamp(hp+damage, 0, 100);
             CombatMgr.Instance().ChangeHp(damage);
             XLogger.Info(string.Format("{3} shoot the player, hpChanged={0}, newHp={1}, theatPos={2}",damage, hp, entity.GetPosition().ToString(),entity.name));

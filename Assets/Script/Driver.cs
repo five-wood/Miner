@@ -12,11 +12,11 @@ public class Driver : MonoBehaviour
         string cfgPath = Application.dataPath + "/cfg.csv";
         BaseConfig.InitAllLevel(cfgPath);
 
-        string logFileName = string.Format("log_{0}_{1}.txt", System.DateTime.Now.ToShortDateString(), System.DateTime.Now.ToShortTimeString()).Replace("/", "_").Replace(":", "_");
+        string logFileName = string.Format("log_{0}_{1}.csv", System.DateTime.Now.ToShortDateString(), System.DateTime.Now.ToShortTimeString()).Replace("/", "_").Replace(":", "_");
         Debug.Log("logFileName " + logFileName);
         string logPath = string.Format("{0}/{1}", Application.dataPath, logFileName);
         Debug.Log("logPath "+logPath);
-        XLogger.OpenLogFile(logPath);
+        XLogger.CreateCSV(logPath);
     }
 
     // Update is called once per frame

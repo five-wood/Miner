@@ -11,7 +11,7 @@ namespace Miner.GameLogic
         
         public override float GenerateHp()
         {
-            return 0;
+            return 20;
         }
 
         public override int GeneratePoint()

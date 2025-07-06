@@ -11,6 +11,7 @@ namespace Miner.GameLogic
 
         public void Shot(Vector3 targetPos, Vector3 ownerPos)
         {
+            RecordUtils.threatShootNum++;
             GameObject bulletPrefab = Resources.Load<GameObject>(ResConst.bulletPath);
             GameObject go = GameObject.Instantiate(bulletPrefab, ownerPos, Quaternion.identity);
             bulletGoList.Add(go);
