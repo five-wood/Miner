@@ -63,6 +63,11 @@ namespace Miner.GameLogic
         public void LoadGame(int level = 1)
         {
             Debug.Log("Start Game");
+            if(level>BaseConfig.maxLevel)
+            {
+                Debug.LogError("传入的关卡超上限");
+                return;
+            }
             this.gameTime = 0;
             this.lastAgentIndex = -1;
             this.isGameOver = false;

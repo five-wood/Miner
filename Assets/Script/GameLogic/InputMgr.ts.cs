@@ -14,8 +14,11 @@ namespace Miner.GameLogic
             return _instance;
         }
 
+        private static float intervalDuration = 0;
         public void Update()
         {
+            intervalDuration -= Time.deltaTime;
+
             if (Input.GetMouseButtonDown(0))
             {
                 Vector3 screenPos = Input.mousePosition;
@@ -35,47 +38,87 @@ namespace Miner.GameLogic
                 CombatMgr.Instance().ProtectPlayer(worldPos);
             }
   
-            if (Input.GetKeyDown(KeyCode.LeftControl)&& Input.GetKeyDown(KeyCode.LeftAlt) && Input.GetKeyDown(KeyCode.Q))
+            if (Input.GetKey(KeyCode.LeftControl)&& Input.GetKey(KeyCode.P) )
             {
-                CombatMgr.Instance().Pause();
+                if(intervalDuration<=0)
+                {
+                    CombatMgr.Instance().Pause();
+                    intervalDuration = 1;
+                }
             }
-            if (Input.GetKeyDown(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.LeftAlt))
+            if (Input.GetKey(KeyCode.LeftControl) && Input.GetKey(KeyCode.LeftAlt))
             {
-                if (Input.GetKeyDown(KeyCode.Alpha1))
+                if (Input.GetKey(KeyCode.Alpha1))
                 {
-                    CombatMgr.Instance().ForceEnter(1);
+                    if (intervalDuration <= 0)
+                    {
+                        CombatMgr.Instance().ForceEnter(1);
+                        intervalDuration = 1;
+                    }
                 }
-                else if(Input.GetKeyDown(KeyCode.Alpha2))
+                else if(Input.GetKey(KeyCode.Alpha2))
                 {
-                    CombatMgr.Instance().ForceEnter(2);
+                    if (intervalDuration <= 0)
+                    {
+                        CombatMgr.Instance().ForceEnter(2);
+                        intervalDuration = 1;
+                    }
                 }
-                else if (Input.GetKeyDown(KeyCode.Alpha3))
+                else if (Input.GetKey(KeyCode.Alpha3))
                 {
-                    CombatMgr.Instance().ForceEnter(3);
+                    if (intervalDuration <= 0)
+                    {
+                        CombatMgr.Instance().ForceEnter(3);
+                        intervalDuration = 1;
+                    }
                 }
-                else if (Input.GetKeyDown(KeyCode.Alpha4))
+                else if (Input.GetKey(KeyCode.Alpha4))
                 {
-                    CombatMgr.Instance().ForceEnter(4);
+                    if (intervalDuration <= 0)
+                    {
+                        CombatMgr.Instance().ForceEnter(4);
+                        intervalDuration = 1;
+                    }
                 }
-                else if (Input.GetKeyDown(KeyCode.Alpha5))
+                else if (Input.GetKey(KeyCode.Alpha5))
                 {
-                    CombatMgr.Instance().ForceEnter(5);
+                    if (intervalDuration <= 0)
+                    {
+                        CombatMgr.Instance().ForceEnter(5);
+                        intervalDuration = 1;
+                    }
                 }
-                else if (Input.GetKeyDown(KeyCode.Alpha6))
+                else if (Input.GetKey(KeyCode.Alpha6))
                 {
-                    CombatMgr.Instance().ForceEnter(6);
+                    if (intervalDuration <= 0)
+                    {
+                        CombatMgr.Instance().ForceEnter(6);
+                        intervalDuration = 1;
+                    }
                 }
-                else if (Input.GetKeyDown(KeyCode.Alpha7))
+                else if (Input.GetKey(KeyCode.Alpha7))
                 {
-                    CombatMgr.Instance().ForceEnter(7);
+                    if (intervalDuration <= 0)
+                    {
+                        CombatMgr.Instance().ForceEnter(7);
+                        intervalDuration = 1;
+                    }
                 }
-                else if (Input.GetKeyDown(KeyCode.Alpha8))
+                else if (Input.GetKey(KeyCode.Alpha8))
                 {
-                    CombatMgr.Instance().ForceEnter(8);
+                    if (intervalDuration <= 0)
+                    {
+                        CombatMgr.Instance().ForceEnter(8);
+                        intervalDuration = 1;
+                    }
                 }
-                else if (Input.GetKeyDown(KeyCode.Alpha9))
+                else if (Input.GetKey(KeyCode.Alpha9))
                 {
-                    CombatMgr.Instance().ForceEnter(9);
+                    if (intervalDuration <= 0)
+                    {
+                        CombatMgr.Instance().ForceEnter(9);
+                        intervalDuration = 1;
+                    }
                 }
             }
 
