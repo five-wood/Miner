@@ -35,7 +35,6 @@ namespace Miner.GameLogic
 
         public virtual void IntervalHurtPlayer(Player player)
         {
-            player.BeHurt(-2, this);
         }
     }
 }

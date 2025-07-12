@@ -20,6 +20,7 @@ namespace Miner.GameLogic
         public static void Record(string msg)
         {
             second++;
+            if (writer == null) return;
             writer.WriteLine(string.Format("{0}-{1},{2},{3}", System.DateTime.Now.ToLongDateString(), System.DateTime.Now.ToLongTimeString(), second, msg ));
         }
 
@@ -31,9 +32,10 @@ namespace Miner.GameLogic
 
         public static void Stop()
         {
-            Debug.Log("XLogger Stop");
+            //Debug.Log("XLogger Stop");
             Flush();
             writer.Dispose();
+            writer = null;
         }
 
         public static void CreateCSV(string path)

@@ -7,6 +7,7 @@ namespace Miner.GameLogic
         public float delayDestoryTime = 0f;
         public AgentConfig config;
         public string name;
+        public bool isDestroy = false;
 
         public BaseEntity()
         {
@@ -68,6 +69,9 @@ namespace Miner.GameLogic
 
         public virtual void Destroy()
         {
+            if (isDestroy)
+                return;
+            isDestroy = true;
             GameObject.Destroy(go);
         }
         public virtual void Update(float deltaTime){}

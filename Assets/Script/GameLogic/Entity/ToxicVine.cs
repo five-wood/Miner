@@ -12,9 +12,14 @@ namespace Miner.GameLogic
 
         public override void IntervalHurtPlayer(Player player)
         {
-            Debug.Log("IntervalHurtPlayer");
+            //Debug.Log("IntervalHurtPlayer");
             base.IntervalHurtPlayer(player);
-            bulletComp.Shot(player.go.transform.position, go.transform.position);
+            bulletComp.Shot(player.go.transform.position, go.transform.position,()=> {
+                if(player!=null && !player.isDestroy)
+                {
+                    player.BeHurt(-2, this) ;
+                }
+            });
         }
 
         public override string GetPrefabPath()

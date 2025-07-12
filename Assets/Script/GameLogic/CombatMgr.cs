@@ -236,20 +236,31 @@ namespace Miner.GameLogic
             this.pause = false;
             player.hp = 100;
             player.point = 0;
-            //清除所有的agent
+            List<int> destroyList = new List<int>();
+            //清除所有在圈内的agent
             foreach(var kv in entityDict)
             {
                 BaseEntity entity = kv.Value;
                 if(entity.Id!=player.Id)
                 {
-                    entity.Destroy();
+                    if(Vector3.Distance(entity.GetPosition(), player.GetPosition())<player.HOOK_CATCH_RADIUS)
+                    {
+                        destroyList.Add(entity.Id);
+                    }
                 }
             }
-            entityDict.Clear();
-            entityDict.Add(player.Id, player);
+            for(int x = 0; x<destroyList.Count; x++)
+            {
+                int eid = destroyList[x];
+                BaseEntity entity = entityDict[eid];
+                entity.Destroy();
+                entityDict.Remove(eid);
+            }
+            //entityDict.Clear();
+            //entityDict.Add(player.Id, player);
             //从当前关死亡的那一个wave开始生成agent，游戏时间也调整
             List<AgentConfig> agentConfigs = BaseConfig.GetLevelConfig(this.level);
-            Debug.LogError(" lastAgentIndex " + lastAgentIndex + ", count " + agentConfigs.Count);
+            //Debug.LogError(" lastAgentIndex " + lastAgentIndex + ", count " + agentConfigs.Count);
             for (int i = lastAgentIndex; i>=0; i--)
             {
                 //找到对应wave

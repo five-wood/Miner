@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -5,17 +6,19 @@ namespace Miner.GameLogic
 {
     public class BulletComp:MonoBehaviour
     {
-        float speed = 50;
+        float speed = 40;
         List<GameObject> bulletGoList = new List<GameObject>();
         List<Vector3> targetPosList = new List<Vector3>();
+        Action hitCallback;
 
-        public void Shot(Vector3 targetPos, Vector3 ownerPos)
+        public void Shot(Vector3 targetPos, Vector3 ownerPos, Action callback)
         {
             RecordUtils.threatShootNum++;
             GameObject bulletPrefab = Resources.Load<GameObject>(ResConst.bulletPath);
             GameObject go = GameObject.Instantiate(bulletPrefab, ownerPos, Quaternion.identity);
             bulletGoList.Add(go);
             targetPosList.Add(targetPos);
+            hitCallback = callback;
         }
 
         void LateUpdate()
@@ -28,6 +31,10 @@ namespace Miner.GameLogic
                 if(Vector3.Distance(bulletGo.transform.position, targetPos) < 0.1f)
                 {
                     RemoveBullet(i);
+                    if(hitCallback!=null)
+                    {
+                        hitCallback.Invoke();
+                    }
                 }
             }
         }
