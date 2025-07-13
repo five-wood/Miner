@@ -46,7 +46,7 @@ namespace Miner.GameLogic
                     intervalDuration = 1;
                 }
             }
-            if (Input.GetKey(KeyCode.LeftControl) && Input.GetKey(KeyCode.LeftAlt))
+            if (Input.GetKey(KeyCode.LeftControl))
             {
                 if (Input.GetKey(KeyCode.Alpha1))
                 {
