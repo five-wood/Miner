@@ -372,6 +372,8 @@ namespace Miner.GameLogic
 
         public void Record()
         {
+            if (player == null || player.isDestroy)
+                return;
             string Level = isGameOver? "-" : this.level.ToString();
             string Wave = isGameOver ? "-" : this.wave.ToString();
             string Avatar_facing = RecordUtils.GetPlayerFace(player);
@@ -395,7 +397,7 @@ namespace Miner.GameLogic
             int Reward_inrange_count = rewardInCnt;
             int Reward_outrange_count = rewardOutCnt;
             string Reward_entry_direction = RecordUtils.GetAngle(nearestReward).ToString();
-            int Reward_entry_angle = nearestReward!=null?(int)nearestReward.config.posType:0;
+            string Reward_entry_angle = nearestReward!=null? Enum.GetName(typeof(PositionEnum), nearestReward.config.posType):"none";
 
             //Threat
             BaseEntity nearestThreat = NearestAgent("Toxic Vine", out int threateInCnt, out int threatOutCnt, out float threatNearestDis);
@@ -408,7 +410,7 @@ namespace Miner.GameLogic
             int Threat_inrange_count = threateInCnt;
             int Threat_outrange_count = threatOutCnt;
             string Threat_entry_direction = RecordUtils.GetAngle(nearestThreat).ToString();
-            int Threat_entry_angle = nearestThreat!=null?(int)nearestThreat.config.posType:0;
+            string Threat_entry_angle = nearestThreat!=null?Enum.GetName(typeof(PositionEnum),nearestThreat.config.posType):"none";
 
             //Tall Mushrooms
             BaseEntity nearestTallMushroom = NearestAgent("Tall Mushroom", out int tallInCnt, out int tallOutCnt, out float tallNearestDis);
@@ -419,7 +421,7 @@ namespace Miner.GameLogic
             int Coactive1_inrange_count = tallInCnt;
             int Coactive1_outrange_count = tallOutCnt;
             string Coactive1_entry_direction = RecordUtils.GetAngle(nearestTallMushroom).ToString();
-            float Coactive1_entry_angle = nearestTallMushroom!=null?(int)nearestTallMushroom.config.posType:0;
+            string Coactive1_entry_angle = nearestTallMushroom!=null? Enum.GetName(typeof(PositionEnum), nearestTallMushroom.config.posType):"none";
 
             BaseEntity nearestFatMushroom = NearestAgent("Fat Mushroom", out int fatInCnt, out int fatOutCnt, out float fatNearestDis);
             int Coactive2_number = fatInCnt + fatOutCnt;
@@ -429,7 +431,7 @@ namespace Miner.GameLogic
             int Coactive2_inrange_count = fatInCnt;
             int Coactive2_outrange_count = fatOutCnt;
             string Coactive2_entry_direction = RecordUtils.GetAngle(nearestFatMushroom).ToString();
-            float Coactive2_entry_angle = nearestFatMushroom!=null?(int)nearestFatMushroom.config.posType:0;
+            string Coactive2_entry_angle = nearestFatMushroom!=null? Enum.GetName(typeof(PositionEnum), nearestFatMushroom.config.posType):"none";
 
             string Action_event_start = RecordUtils.GetActionStartTimes();
             string Action_event_end = RecordUtils.GetActionEndTimes();
@@ -490,7 +492,7 @@ namespace Miner.GameLogic
         {
             inRangeCnt = 0;
             outRangeCnt = 0;
-            nearestDis = 99999999;
+            nearestDis = 999999;
             if (isGameOver)
             {
                 return null;

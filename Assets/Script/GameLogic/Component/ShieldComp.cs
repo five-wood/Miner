@@ -38,7 +38,7 @@ namespace Miner.GameLogic
                 duration = 0;
                 gameObject.SetActive(false);
                 RecordUtils.actionDetailTypes.Add(ActionResult.SuccBlock);
-                RecordUtils.actionEndTimes.Add(string.Format("block{0}{1}", DateTime.Now.ToLongDateString(), DateTime.Now.ToLongTimeString()));
+                RecordUtils.actionEndTimes.Add(string.Format("block-{0}",  DateTime.Now.ToLongTimeString()));
             }
         }
 

@@ -668,6 +668,17 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1301802569}
     m_Modifications:
+    - target: {fileID: 548059076996247904, guid: 61e34f7a03c9eae4fbdfe2862c5a1dd0, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2796721439725946636, guid: 61e34f7a03c9eae4fbdfe2862c5a1dd0, type: 3}
+      propertyPath: m_Text
+      value: Forest explorer Enoki is foraging the natural lands for raw gold to
+        become rich. In his hunt, he upset the forest God for disrupting the land,
+        and now the hunt has gotten dangerous as the forest comes to life. Find out
+        who is a friend and who is a foe as you collect as much gold as you can.
+      objectReference: {fileID: 0}
     - target: {fileID: 3177385017020878873, guid: 61e34f7a03c9eae4fbdfe2862c5a1dd0, type: 3}
       propertyPath: m_Color.b
       value: 1
