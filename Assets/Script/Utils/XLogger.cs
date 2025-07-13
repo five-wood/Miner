@@ -21,7 +21,7 @@ namespace Miner.GameLogic
         {
             second++;
             if (writer == null) return;
-            writer.WriteLine(string.Format("{0}-{1},{2},{3}", System.DateTime.Now.ToLongDateString(), System.DateTime.Now.ToLongTimeString(), second, msg ));
+            writer.WriteLine(string.Format("\"{0}-{1}\",{2},{3}", System.DateTime.Now.ToShortDateString(), System.DateTime.Now.ToLongTimeString(), second, msg ));
         }
 
         public static void Flush()
