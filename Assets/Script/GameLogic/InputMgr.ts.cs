@@ -37,8 +37,8 @@ namespace Miner.GameLogic
                 XLogger.Info("Throw the Shield, clickPos = " + worldPos.ToString());
                 CombatMgr.Instance().ProtectPlayer(worldPos);
             }
-  
-            if (Input.GetKey(KeyCode.LeftControl)&& Input.GetKey(KeyCode.P) )
+
+             if (Input.GetKey(KeyCode.LeftControl)&& Input.GetKey(KeyCode.P) )
             {
                 if(intervalDuration<=0)
                 {
@@ -46,7 +46,7 @@ namespace Miner.GameLogic
                     intervalDuration = 1;
                 }
             }
-            if (Input.GetKey(KeyCode.LeftControl))
+            if (Input.GetKey(KeyCode.LeftControl)&& Input.GetKey(KeyCode.LeftAlt))
             {
                 if (Input.GetKey(KeyCode.Alpha1))
                 {

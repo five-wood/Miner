@@ -64,7 +64,7 @@ namespace Miner.UI
             StartGameByLv(1);
         }   
 
-        private void StartGameByLv(int lv)
+        public void StartGameByLv(int lv)
         {
             if (lv > BaseConfig.maxLevel)
             {

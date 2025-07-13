@@ -293,7 +293,10 @@ namespace Miner.GameLogic
         public void ForceEnter(int level)
         {
             this.ExitGame();
-            this.LoadGame(level);
+            if(this.mainView)
+            {
+                this.mainView.StartGameByLv(level);
+            }
         }
         public BaseEntity GetEntityByID(int id)
         {
