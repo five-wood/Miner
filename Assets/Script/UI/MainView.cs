@@ -161,7 +161,7 @@ namespace Miner.UI
             {
                 str = "<color=\"#00ee00\">+{0}</color>";
             }
-            pointChangeTxt.enabled = true;
+            hpChangeTxt.enabled = true;
             hpChangeTxt.text = string.Format(str, (int)(Mathf.Abs(value)));
             hpAnim.enabled = true;
             hpAnim.Play("hpJump",0,0f);
