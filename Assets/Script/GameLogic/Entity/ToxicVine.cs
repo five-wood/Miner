@@ -17,7 +17,7 @@ namespace Miner.GameLogic
             bulletComp.Shot(player.go.transform.position, go.transform.position,()=> {
                 if(player!=null && !player.isDestroy)
                 {
-                    player.BeHurt(-2, this) ;
+                    player.BeHurt(-5, this) ;
                 }
             });
         }

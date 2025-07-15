@@ -73,6 +73,11 @@ namespace Miner.GameLogic
                     XLogger.Info(string.Format("Shield Miss"));
                     RecordUtils.actionDetailTypes.Add(ActionResult.MissingBlock);
                     RecordUtils.actionEndTimes.Add(string.Format("block-{0}", DateTime.Now.ToLongTimeString()));
+                    Player player = CombatMgr.Instance().player;
+                    if(player!=null)
+                    {
+                        player.modelRender.sprite = player.modelSpriteDict["hero"];
+                    }
                 }
             }
         }

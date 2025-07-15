@@ -18,7 +18,7 @@ namespace Miner.GameLogic
         public float totalCatchTime = 0;
         public ShieldComp shieldComp;
 
-        SpriteRenderer modelRender;
+        public SpriteRenderer modelRender;
 
         public HookCollisionComp hookCollisionComp;
 

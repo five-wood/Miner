@@ -16,6 +16,7 @@ namespace Miner.UI
         public InputField levelInputField;
         public GameObject gamingGo;
         public Text pointText;
+        public GameObject finalGo;
 
         public GameObject afterGo;
         public Text resultTxt;
@@ -48,6 +49,7 @@ namespace Miner.UI
             beforeGo.SetActive(true);
             gamingGo.SetActive(false);
             afterGo.SetActive(false);
+            finalGo.SetActive(false);
             hpAnim = hpChangeTxt.gameObject.GetComponent<Animator>();
             pointAnim = pointChangeTxt.gameObject.GetComponent<Animator>();
             hpAnim.enabled = false;
@@ -76,6 +78,7 @@ namespace Miner.UI
             beforeGo.SetActive(false);
             gamingGo.SetActive(true);
             afterGo.SetActive(false);
+            finalGo.SetActive(false);
             hpChangeTxt.text = "";
             pointChangeTxt.text = "";
         }
@@ -93,12 +96,14 @@ namespace Miner.UI
                 beforeGo.SetActive(true);
                 gamingGo.SetActive(false);
                 afterGo.SetActive(false);
+                finalGo.SetActive(false);
             }
             else
             {
                 beforeGo.SetActive(false);
                 gamingGo.SetActive(false);
                 afterGo.SetActive(true);
+                finalGo.SetActive(false);
                 resultTxt.text = isWin?"You Win":"Game Over";
                 winGo.SetActive(isWin);
                 loseGo.SetActive(!isWin);
@@ -135,9 +140,10 @@ namespace Miner.UI
             CombatMgr.Instance().RealExitGame();
             if(this._level == BaseConfig.maxLevel)
             {
-                beforeGo.SetActive(true);
+                beforeGo.SetActive(false);
                 gamingGo.SetActive(false);
                 afterGo.SetActive(false);
+                finalGo.SetActive(true);
             }
             else
             {
@@ -150,6 +156,7 @@ namespace Miner.UI
             beforeGo.SetActive(true);
             gamingGo.SetActive(false);
             afterGo.SetActive(false);
+            finalGo.SetActive(false);
             CombatMgr.Instance().RealExitGame();
         }
 
@@ -205,6 +212,7 @@ namespace Miner.UI
                     beforeGo.SetActive(false);
                     gamingGo.SetActive(true);
                     afterGo.SetActive(false);
+                    finalGo.SetActive(false);
                     CombatMgr.Instance().ContinueGame();
                 }
             }
