@@ -39,6 +39,11 @@ namespace Miner.GameLogic
                 gameObject.SetActive(false);
                 RecordUtils.actionDetailTypes.Add(ActionResult.SuccBlock);
                 RecordUtils.actionEndTimes.Add(string.Format("block-{0}",  DateTime.Now.ToLongTimeString()));
+                Player player = CombatMgr.Instance().player;
+                if (player != null)
+                {
+                    player.modelRender.sprite = player.modelSpriteDict["hero"];
+                }
             }
         }
 
