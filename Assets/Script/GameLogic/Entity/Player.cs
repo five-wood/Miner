@@ -112,6 +112,7 @@ namespace Miner.GameLogic
                         RecordUtils.actionDetailTypes.Add(ActionResult.MissingHook);
                         XLogger.Info(string.Format("Hook Miss"));
                         RecordUtils.actionEndTimes.Add(string.Format("hook-{0}", DateTime.Now.ToLongTimeString()));
+                        modelRender.sprite = modelSpriteDict["hero"];
                     }
                 }
                 else

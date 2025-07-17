@@ -31,6 +31,8 @@ namespace Miner.UI
 
         public GameObject winGo;
         public Text winScoreTxt;
+        public GameObject positiveWinGo;
+        public GameObject negativeWinGo;
         public GameObject loseGo;
         public Text loseTimerTxt;
         public Text loseScoreTxt;
@@ -38,6 +40,7 @@ namespace Miner.UI
         private float winTimer = 0;
 
         private int _level = 1;
+
 
         public void Start()
         {
@@ -49,7 +52,6 @@ namespace Miner.UI
             beforeGo.SetActive(true);
             gamingGo.SetActive(false);
             afterGo.SetActive(false);
-            finalGo.SetActive(false);
             hpAnim = hpChangeTxt.gameObject.GetComponent<Animator>();
             pointAnim = pointChangeTxt.gameObject.GetComponent<Animator>();
             hpAnim.enabled = false;
@@ -78,7 +80,6 @@ namespace Miner.UI
             beforeGo.SetActive(false);
             gamingGo.SetActive(true);
             afterGo.SetActive(false);
-            finalGo.SetActive(false);
             hpChangeTxt.text = "";
             pointChangeTxt.text = "";
         }
@@ -96,14 +97,12 @@ namespace Miner.UI
                 beforeGo.SetActive(true);
                 gamingGo.SetActive(false);
                 afterGo.SetActive(false);
-                finalGo.SetActive(false);
             }
             else
             {
                 beforeGo.SetActive(false);
                 gamingGo.SetActive(false);
                 afterGo.SetActive(true);
-                finalGo.SetActive(false);
                 resultTxt.text = isWin?"You Win":"Game Over";
                 winGo.SetActive(isWin);
                 loseGo.SetActive(!isWin);
@@ -113,6 +112,9 @@ namespace Miner.UI
                     winScoreTxt.text = string.Format("{0}", point);
                     this.nextBtn.gameObject.SetActive(false);
                     winTimer = 60;
+                    negativeWinGo.SetActive(point <= 0);
+                    positiveWinGo.SetActive(point > 0);
+                    finalGo.SetActive(this._level == BaseConfig.maxLevel);
                 }
                 else
                 {
@@ -140,10 +142,9 @@ namespace Miner.UI
             CombatMgr.Instance().RealExitGame();
             if(this._level == BaseConfig.maxLevel)
             {
-                beforeGo.SetActive(false);
+                beforeGo.SetActive(true);
                 gamingGo.SetActive(false);
                 afterGo.SetActive(false);
-                finalGo.SetActive(true);
             }
             else
             {
@@ -156,7 +157,6 @@ namespace Miner.UI
             beforeGo.SetActive(true);
             gamingGo.SetActive(false);
             afterGo.SetActive(false);
-            finalGo.SetActive(false);
             CombatMgr.Instance().RealExitGame();
         }
 
@@ -229,7 +229,6 @@ namespace Miner.UI
                     beforeGo.SetActive(false);
                     gamingGo.SetActive(true);
                     afterGo.SetActive(false);
-                    finalGo.SetActive(false);
                     CombatMgr.Instance().ContinueGame();
                 }
             }
