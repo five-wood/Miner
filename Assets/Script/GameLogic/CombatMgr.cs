@@ -385,6 +385,8 @@ namespace Miner.GameLogic
             string Avatar_action_detail = RecordUtils.GetCurActionDetails();
             float Avatar_health = player == null ? 0 : player.hp;
             string Avatar_healthchange = RecordUtils.GetHpChanged();
+            int Avatar_gold = player == null ? 0 : player.point;
+            string Avatar_goldchange = RecordUtils.GetGoldChanged();
 
             //当前屏幕上所有 agent 的总数
             int Agent_number = entityDict == null ? 0 : entityDict.Count - 1;
@@ -445,7 +447,10 @@ namespace Miner.GameLogic
                 Avatar_action,
                 Avatar_action_face,
                 Avatar_action_detail,
+                Avatar_health,
                 Avatar_healthchange,
+                Avatar_gold,
+                Avatar_goldchange,
                 Agent_number.ToString(),
                 positive_contact,
                 negative_contact,

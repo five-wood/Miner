@@ -271,6 +271,7 @@ namespace Miner.GameLogic
                     if(pointChanged < 0)
                     {
                         point += pointChanged;
+                        RecordUtils.goldChanged.Add(pointChanged);
                         CombatMgr.Instance().ChangePoint(pointChanged);
                     }
                 }
@@ -289,6 +290,7 @@ namespace Miner.GameLogic
             CombatMgr.Instance().ChangeHp(hpChanged);
             hp = Mathf.Clamp(hp + hpChanged, 0, 100);
             int pointChanged = entity.GeneratePoint();
+            RecordUtils.goldChanged.Add(pointChanged);
             point += pointChanged;
             CombatMgr.Instance().ChangePoint(pointChanged);
             XLogger.Info(string.Format("{0} hit the player, hitPos={1}, Caught={2}, hpChanged={3}, newHp={4}, scoreChanged={5}, newScore={6}", entity.name, entity.GetPosition().ToString(), catchEntityId == entity.Id, hpChanged, hp, pointChanged, point));

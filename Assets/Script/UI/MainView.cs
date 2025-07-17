@@ -160,26 +160,42 @@ namespace Miner.UI
             CombatMgr.Instance().RealExitGame();
         }
 
+        private float hpChanged = 0;
+        private float hpJumpDelay =0;
         public void ChangeHp(float value)
         {
             if (Mathf.Approximately(value, 0)) return;
+            hpChanged += value;
+            hpJumpDelay = Math.Max(0.1f, Mathf.Min(hpJumpDelay + 0.2f, 1.2f));
+        }
+
+        public void JumpHp(float value)
+        {
             string str = "<color=\"#ee0000\">-{0}</color>";
-            if(value > 0)
+            if (value > 0)
             {
                 str = "<color=\"#00ee00\">+{0}</color>";
             }
             hpChangeTxt.enabled = true;
             hpChangeTxt.text = string.Format(str, (int)(Mathf.Abs(value)));
             hpAnim.enabled = true;
-            hpAnim.Play("hpJump",0,0f);
+            hpAnim.Play("hpJump", 0, 0f);
+            hpChanged = 0;
         }
 
+        private int pointChanged = 0;
+        private float pointJumpDelay = 0;
         public void ChangePoint(int curValue)
         {
             if (curValue == 0)
                 return;
+            pointChanged += curValue;
+            pointJumpDelay = Math.Max(0.1f, Mathf.Min(pointJumpDelay + 0.2f, 1.2f));
+        }
+        private void JumpPoint(int curValue)
+        {
             pointChangeTxt.enabled = true;
-            if(curValue>0)
+            if (curValue > 0)
             {
                 pointChangeTxt.text = string.Format("<color=\"#00ee00\">+{0}</color>", curValue);
             }
@@ -188,7 +204,8 @@ namespace Miner.UI
                 pointChangeTxt.text = string.Format("<color=\"#ee0000\">{0}</color>", curValue);
             }
             pointAnim.enabled = true;
-            pointAnim.Play("pointJump",0,0f);
+            pointAnim.Play("pointJump", 0, 0f);
+            pointChanged = 0;
         }
 
         public void Update()
@@ -225,6 +242,23 @@ namespace Miner.UI
                 }
             }
             
+            if(hpJumpDelay>0)
+            {
+                hpJumpDelay -= Time.deltaTime;
+                if(hpJumpDelay<0)
+                {
+                    JumpHp(this.hpChanged);
+                }
+            }
+
+            if(pointJumpDelay>0)
+            {
+                pointJumpDelay -= Time.deltaTime;
+                if(pointJumpDelay<0)
+                {
+                    JumpPoint(this.pointChanged);
+                }
+            }
         }
     }
 }

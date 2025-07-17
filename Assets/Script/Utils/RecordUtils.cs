@@ -63,6 +63,7 @@ namespace Miner.GameLogic
 
         static public List<ActionType> actionTypes = new List<ActionType>();
         static public List<float> hpChanged = new List<float>();
+        static public List<float> goldChanged = new List<float>();
         static public List<ActionResult> actionDetailTypes = new List<ActionResult>();
         static public List<string> positiveHit = new List<string>();
         static public List<string> negativeHit = new List<string>();
@@ -91,7 +92,16 @@ namespace Miner.GameLogic
             });
             return string.Format("\"{0}\"", log);
         }
-
+        
+        static public string GetGoldChanged()
+        {
+            string log = "";
+            goldChanged.ForEach((value) =>
+            {
+                log += value + ",";
+            });
+            return string.Format("\"{0}\"", log);
+        }
         static public string GetHpChanged()
         {
             string log = "";
@@ -157,6 +167,7 @@ namespace Miner.GameLogic
             actionTypes.Clear();
             actionDetailTypes.Clear();
             hpChanged.Clear();
+            goldChanged.Clear();
             positiveHit.Clear();
             negativeHit.Clear();
             isPlayHurt = 0;
