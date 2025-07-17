@@ -268,7 +268,7 @@ namespace Miner.GameLogic
                         hp = Mathf.Clamp(hp + hpChanged, 0, 100);
                     }
                     int pointChanged = entity.GeneratePoint();
-                    if(point<0)
+                    if(pointChanged < 0)
                     {
                         point += pointChanged;
                         CombatMgr.Instance().ChangePoint(pointChanged);
