@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Miner.GameLogic;
+using Miner.Utils;
 
 public class Driver : MonoBehaviour
 {
@@ -38,7 +39,8 @@ public class Driver : MonoBehaviour
 
     void OnQuitting()
     {
-        Debug.Log("ÓÎÏ·¼´½«ÍË³ö£¡");
+        Debug.Log("æ¸¸æˆå³å°†é€€å‡º");
+        SocketManager.Instance.Disconnect();
         XLogger.Stop();
     }
 
