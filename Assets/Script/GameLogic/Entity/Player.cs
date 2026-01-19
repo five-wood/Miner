@@ -254,32 +254,38 @@ namespace Miner.GameLogic
             else
             {
                 RecordUtils.negativeHit.Add(entity.name);
-                if(EntityUtils.IsReward(entity))
-                {
-                    //do nothing
-                }
-                //被动触碰，只触发负收益
-                else if(EntityUtils.IsCoactive(entity))
-                {
-                    float hpChanged = entity.GenerateHp();
-                    if(hpChanged<0)
-                    {
-                        RecordUtils.hpChanged.Add(hpChanged);
-                        CombatMgr.Instance().ChangeHp(hpChanged);
-                        hp = Mathf.Clamp(hp + hpChanged, 0, 100);
-                    }
-                    int pointChanged = entity.GeneratePoint();
-                    if(pointChanged < 0)
-                    {
-                        point += pointChanged;
-                        RecordUtils.goldChanged.Add(pointChanged);
-                        CombatMgr.Instance().ChangePoint(pointChanged);
-                    }
-                }
-                else
-                {
-                    CommonHitHandler(entity);
-                }
+                // if(EntityUtils.IsReward(entity))
+                // {
+                //     //do nothing
+                // }
+                // //被动触碰，只触发负收益
+                // else if(EntityUtils.IsCoactive(entity))
+                // {
+                //     float hpChanged = entity.GenerateHp();
+                //     if(hpChanged<0)
+                //     {
+                //         RecordUtils.hpChanged.Add(hpChanged);
+                //         CombatMgr.Instance().ChangeHp(hpChanged);
+                //         hp = Mathf.Clamp(hp + hpChanged, 0, 100);
+                //     }
+                //     int pointChanged = entity.GeneratePoint();
+                //     if(pointChanged < 0)
+                //     {
+                //         point += pointChanged;
+                //         RecordUtils.goldChanged.Add(pointChanged);
+                //         CombatMgr.Instance().ChangePoint(pointChanged);
+                //     }
+                // }
+                // else
+                // {
+                //     CommonHitHandler(entity);
+                // }
+
+                //2026-01-19 迭代：所有的agent被动碰撞统一为-30 gold
+                int pointChanged = -30;
+                point += pointChanged;
+                RecordUtils.goldChanged.Add(pointChanged);
+                CombatMgr.Instance().ChangePoint(pointChanged);
             }
  
         }

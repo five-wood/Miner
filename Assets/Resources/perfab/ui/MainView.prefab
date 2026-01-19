@@ -187,7 +187,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &4296691578341694418
 RectTransform:
   m_ObjectHideFlags: 0
@@ -228,7 +228,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &4857536263300751572
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1393,7 +1393,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -157}
+  m_AnchoredPosition: {x: 0, y: -212.9}
   m_SizeDelta: {x: 1355.3, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5592262548273386645
@@ -1434,10 +1434,15 @@ MonoBehaviour:
     m_Alignment: 4
     m_AlignByGeometry: 0
     m_RichText: 1
-    m_HorizontalOverflow: 0
+    m_HorizontalOverflow: 1
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: 'How to play: left click to grab your target and right click to block. '
+  m_Text: 'How to play: left click to grab your target and right click to block.
+
+    Getting
+    hit by the agent you''ll lose 30 golds. Always grab or block to stay safe.
+
+'
 --- !u!114 &3413067811883837411
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2198,7 +2203,7 @@ MonoBehaviour:
   m_Text: <color="#ee0000">-10</color>
 --- !u!95 &383530608289799850
 Animator:
-  serializedVersion: 4
+  serializedVersion: 5
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -2215,7 +2220,8 @@ Animator:
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorControllerStateOnDisable: 0
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &5540507177746398139
 GameObject:
   m_ObjectHideFlags: 0
@@ -3639,7 +3645,7 @@ MonoBehaviour:
   m_Text: +10
 --- !u!95 &642085643855983769
 Animator:
-  serializedVersion: 4
+  serializedVersion: 5
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -3656,7 +3662,8 @@ Animator:
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorControllerStateOnDisable: 0
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &8728240340253401172
 GameObject:
   m_ObjectHideFlags: 0

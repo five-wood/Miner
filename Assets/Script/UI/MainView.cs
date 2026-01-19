@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using Miner.GameLogic;
+using Miner.Utils;
 using System;
 
 namespace Miner.UI
@@ -82,6 +83,9 @@ namespace Miner.UI
             afterGo.SetActive(false);
             hpChangeTxt.text = "";
             pointChangeTxt.text = "";
+            
+            // å‘é€å…³å¡å¼€å§‹æ¶ˆæ¯
+            SocketManager.Instance.SendLevelStart(lv);
         }
 
         public void OnExitGame()
@@ -224,7 +228,7 @@ namespace Miner.UI
             {
                 loseTimer -= Time.deltaTime;
                 loseTimerTxt.text = string.Format("{0} seconds", (int)(loseTimer + 1));
-                if(loseTimer<=0) //µ¹¼ÆÊ±½áÊø£¬»Øµ½ÉÏÒ»¹Ø¼ÌĞøÍæ
+                if(loseTimer<=0) //ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Øµï¿½ï¿½ï¿½Ò»ï¿½Ø¼ï¿½ï¿½ï¿½ï¿½ï¿½
                 {
                     beforeGo.SetActive(false);
                     gamingGo.SetActive(true);

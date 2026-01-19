@@ -4,6 +4,7 @@ using Unity.Mathematics;
 using System;
 using System.Collections.Generic;
 using Miner.UI;
+using Miner.Utils;
 using Unity.VisualScripting;
 namespace Miner.GameLogic
 {
@@ -214,7 +215,10 @@ namespace Miner.GameLogic
         public void OnGameOver()
         {
             isGameOver = true;
-            if(player.hp > 0)
+            bool isWin = player.hp > 0;
+            int score = player.point;
+            
+            if(isWin)
             {
                 XLogger.Info(string.Format("game win, run={2}, hp={0},score={1}", player.hp, player.point, this.level));
             }
@@ -226,8 +230,12 @@ namespace Miner.GameLogic
             }
             if (mainView != null)
             {
-                mainView.OnGameOver(false, player.hp > 0, player.point);
+                mainView.OnGameOver(false, isWin, score);
             }
+            
+            // 发送关卡结束消息
+            SocketManager.Instance.SendLevelEnd(this.level, isWin, score);
+            
             XLogger.Flush();
         }
 
