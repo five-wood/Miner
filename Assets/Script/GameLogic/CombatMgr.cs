@@ -245,13 +245,13 @@ namespace Miner.GameLogic
             player.hp = 100;
             player.point = 0;
             List<int> destroyList = new List<int>();
-            //清除所有在圈内的agent
+            //清除所有的agent
             foreach(var kv in entityDict)
             {
                 BaseEntity entity = kv.Value;
                 if(entity.Id!=player.Id)
                 {
-                    if(Vector3.Distance(entity.GetPosition(), player.GetPosition())<player.HOOK_CATCH_RADIUS)
+                    // if(Vector3.Distance(entity.GetPosition(), player.GetPosition())<player.HOOK_CATCH_RADIUS)
                     {
                         destroyList.Add(entity.Id);
                     }
