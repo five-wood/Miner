@@ -55,8 +55,15 @@ namespace Miner.UI
             afterGo.SetActive(false);
             hpAnim = hpChangeTxt.gameObject.GetComponent<Animator>();
             pointAnim = pointChangeTxt.gameObject.GetComponent<Animator>();
+            ResetAnim();
+        }
+
+        private void ResetAnim()
+        {
             hpAnim.enabled = false;
             pointAnim.enabled = false;
+            pointChangeTxt.text = "";
+            hpChangeTxt.text = "";
             pointChangeTxt.transform.GetChild(0).gameObject.SetActive(false);
         }
 
@@ -233,6 +240,7 @@ namespace Miner.UI
                     beforeGo.SetActive(false);
                     gamingGo.SetActive(true);
                     afterGo.SetActive(false);
+                    ResetAnim();
                     CombatMgr.Instance().ContinueGame();
                 }
             }

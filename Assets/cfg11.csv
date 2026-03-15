@@ -1,0 +1,8 @@
+Run,Wave,Run Time,Total Time,Agent,Agent Type,Position,Speed,Interval to Atk,Interval to Next,Phase,Group ID,Agent Combination
+1,1,0,1,Lucky grass,Reward,Top-Left,3,1,3,Single-Agent,1-1-S1,
+1,1,3,7,Tall Mushroom,Coactivation,Bottom-Left,3,2,3,Single-Agent,1-1-S3,
+1,1,4,7,Fat Mushroom,Coactivation,Bottom-Left,3,2,3,Single-Agent,1-1-S3,
+1,2,5,4,Toxic Vine,Threat,Top-Right,3,1,3,Single-Agent,1-1-S2,
+1,2,6,7,Fat Mushroom,Coactivation,Bottom-Left,3,2,3,Single-Agent,1-1-S3,
+1,2,7,7,Fat Mushroom,Coactivation,Bottom-Left,3,2,3,Single-Agent,1-1-S3,
+2,1,1,2,Fat Mushroom,Coactivation,Bottom-Left,3,2,3,Single-Agent,1-1-S3,
