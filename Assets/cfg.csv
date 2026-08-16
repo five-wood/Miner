@@ -89,7 +89,7 @@ Run,Wave,Spawn_id,Run Time,Total Time,Agent,Agent Type,Position,Speed,Interval t
 2,2,L_88_e,49,150,Tall Mushroom,Threat,Top-Right,5,2,2.2,Multi-Agent,2-2-M1,"('Lucky grass', 'Toxic Vine')"
 2,2,L_89_e,49,150,Toxic Vine,Reward,Bottom-Right,5,2,0,Multi-Agent,2-2-M1,"('Lucky grass', 'Toxic Vine')"
 2,2,L_90_e,51.2,152.2,Fat Mushroom,Threat,Top-Right,5,2,0,Multi-Agent,2-2-M2,"('Fat Mushroom', 'Toxic Vine')"
-2,2,L_91_e,51.2,152.2,Tall Mushroom,Coactivation,Top-Left,5,2,2.2,Multi-Agent,2-2-M2,"('Fat Mushroom', 'Toxic Vine')"
+2,2,L_2_e,51.2,152.2,Tall Mushroom,Coactivation,Top-Left,5,2,2.2,Multi-Agent,2-2-M2,"('Fat Mushroom', 'Toxic Vine')"
 2,2,L_92_e,51.2,152.2,Toxic Vine,Threat,Top-Right,5,2,0,Multi-Agent,2-2-M2,"('Fat Mushroom', 'Toxic Vine')"
 2,2,L_93_e,53.4,154.4,Fat Mushroom,Reward,Top-Left,5,2,0,Multi-Agent,2-2-M3,"('Fat Mushroom', 'Lucky grass', 'Tall Mushroom')"
 2,2,L_94_e,53.4,154.4,Lucky grass,Coactivation,Top-Right,5,2,0,Multi-Agent,2-2-M3,"('Fat Mushroom', 'Lucky grass', 'Tall Mushroom')"
