@@ -14,6 +14,7 @@ namespace Miner.GameLogic
         public virtual void InitConfig(){}
 
         private static bool hadInit = false;
+        private static bool warnedMissingSpawnId = false;
 
         public static int maxLevel = -1;
 
@@ -46,6 +47,19 @@ namespace Miner.GameLogic
                 agentConfig.posType = GetPosEnum(item["Position"]);
                 agentConfig.speed = float.Parse(item["Speed"]);
                 agentConfig.atkInterval = float.Parse(item["Interval to Atk"]);
+                if (item.ContainsKey("spawn_id"))
+                {
+                    agentConfig.spawnId = item["spawn_id"] == null ? "" : item["spawn_id"].Trim();
+                }
+                else
+                {
+                    agentConfig.spawnId = "";
+                    if (!warnedMissingSpawnId)
+                    {
+                        warnedMissingSpawnId = true;
+                        Debug.LogWarning("cfg.csv missing spawn_id column; logs will leave spawn_id empty.");
+                    }
+                }
                 levelConfigs[level].Add(agentConfig);
             }
             //按时间排序,从早到晚

@@ -8,6 +8,7 @@ namespace Miner.GameLogic
         public AgentConfig config;
         public string name;
         public bool isDestroy = false;
+        public float logEnteredAt = 0f;
 
         public BaseEntity()
         {

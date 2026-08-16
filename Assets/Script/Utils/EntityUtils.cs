@@ -37,6 +37,27 @@ namespace Miner.GameLogic
         {
             return entity is Reward;
         }
+
+        public static string GetLogAgentType(BaseEntity entity)
+        {
+            if (entity is FatMushroom)
+            {
+                return "Coactive_Fat";
+            }
+            if (entity is TallMushroom)
+            {
+                return "Coactive_Tall";
+            }
+            if (entity is Threat)
+            {
+                return "Threat";
+            }
+            if (entity is Reward)
+            {
+                return "Reward";
+            }
+            return "";
+        }
     }
 }
 

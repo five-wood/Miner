@@ -13,5 +13,6 @@ namespace Miner.GameLogic
         public PositionEnum posType;
         public float speed;
         public float atkInterval;
+        public string spawnId;
     }
 }
