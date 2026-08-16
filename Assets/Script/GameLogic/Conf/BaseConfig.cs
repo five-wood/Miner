@@ -16,6 +16,7 @@ namespace Miner.GameLogic
 
         private static bool hadInit = false;
         private static bool warnedMissingSpawnId = false;
+        private static readonly Dictionary<string, List<string>> spawnIdOccurrences = new Dictionary<string, List<string>>();
 
         public static int maxLevel = -1;
 
@@ -62,13 +63,48 @@ namespace Miner.GameLogic
                         Debug.LogWarning("cfg.csv missing spawn_id column; logs will leave spawn_id empty.");
                     }
                 }
+                RecordSpawnIdOccurrence(agentConfig);
                 levelConfigs[level].Add(agentConfig);
             }
+            WarnDuplicateSpawnIds();
             //按时间排序,从早到晚
             foreach(var item in levelConfigs)
             {
                 item.Value.Sort((a, b) => a.bornTime.CompareTo(b.bornTime));
             }
+        }
+
+        private static void RecordSpawnIdOccurrence(AgentConfig agentConfig)
+        {
+            if (string.IsNullOrEmpty(agentConfig.spawnId))
+            {
+                return;
+            }
+            string loc = string.Format("Run {0} Wave {1} {2}", agentConfig.level, agentConfig.wave, agentConfig.agentName);
+            if (!spawnIdOccurrences.ContainsKey(agentConfig.spawnId))
+            {
+                spawnIdOccurrences[agentConfig.spawnId] = new List<string>();
+            }
+            spawnIdOccurrences[agentConfig.spawnId].Add(loc);
+        }
+
+        private static void WarnDuplicateSpawnIds()
+        {
+            List<string> lines = new List<string>();
+            foreach (var kv in spawnIdOccurrences)
+            {
+                if (kv.Value.Count > 1)
+                {
+                    lines.Add(kv.Key + " ×" + kv.Value.Count + "：\n  " + string.Join("\n  ", kv.Value.ToArray()));
+                }
+            }
+            if (lines.Count == 0)
+            {
+                return;
+            }
+            string message = "cfg.csv 中存在重复的 spawn_id：\n\n" + string.Join("\n\n", lines.ToArray());
+            Debug.LogWarning(message);
+            CSVReader.ShowNativePopup(message, "配置警告");
         }
 
         private static string ReadSpawnId(Dictionary<string, string> item)

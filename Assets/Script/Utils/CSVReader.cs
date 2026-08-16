@@ -25,8 +25,9 @@ namespace Miner.GameLogic
             {
                 ShowNativePopup("配置文件不存在：" + filePath, "异常");
             }
-            // 读取CSV文件
-            using (StreamReader reader = new StreamReader(filePath))
+            // FileShare.ReadWrite：Unity/Excel 占用 Assets/cfg.csv 时仍可读
+            using (FileStream stream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite | FileShare.Delete))
+            using (StreamReader reader = new StreamReader(stream))
             {
                 // 读取标题行
                 string[] headers = reader.ReadLine().Split(',');
