@@ -257,7 +257,11 @@ namespace Miner.GameLogic
 
         public void OnHit(MoveableEntity entity)
         {
-            if(catchEntityId == entity.Id)
+            if(entity == null)
+            {
+                return;
+            }
+            if(catchEntityId == entity.Id || SessionLogger.Instance.IsExited(entity.Id))
             {
                 return;
             }
