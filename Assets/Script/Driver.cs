@@ -17,7 +17,7 @@ public class Driver : MonoBehaviour
         Debug.Log("logFileName " + logFileName);
         string logPath = string.Format("{0}/{1}", Application.dataPath, logFileName);
         Debug.Log("logPath "+logPath);
-        XLogger.CreateCSV(logPath);
+        SessionLogger.Instance.CreateFile(logPath);
     }
 
     // Update is called once per frame
@@ -41,7 +41,12 @@ public class Driver : MonoBehaviour
     {
         Debug.Log("游戏即将退出");
         SocketManager.Instance.Disconnect();
-        XLogger.Stop();
+        CombatMgr combat = CombatMgr.Instance();
+        if (combat.player != null)
+        {
+            SessionLogger.Instance.EndLevel((int)combat.player.hp, combat.player.point, combat.CollectAgentSnapshots());
+        }
+        SessionLogger.Instance.Stop();
     }
 
 

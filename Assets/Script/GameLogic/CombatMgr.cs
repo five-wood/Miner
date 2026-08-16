@@ -76,6 +76,7 @@ namespace Miner.GameLogic
             this.pause = false;
             this.wave = 0;
             CreatePlayer();
+            SessionLogger.Instance.StartLevel(this.level);
         }
 
         private List<int> _destroyList = new List<int>();
@@ -111,6 +112,11 @@ namespace Miner.GameLogic
             {
                 entityDict[_destroyList[i]].Destroy();
                 entityDict.Remove(_destroyList[i]);
+            }
+
+            if (player != null && !player.isDestroy)
+            {
+                SessionLogger.Instance.Tick(deltaTime, (int)player.hp, player.point, CollectAgentSnapshots());
             }
 
             //更新主界面
@@ -216,6 +222,10 @@ namespace Miner.GameLogic
         {
             isGameOver = true;
             bool isWin = player.hp > 0;
+            if (isWin)
+            {
+                SessionLogger.Instance.EndLevel((int)player.hp, player.point, CollectAgentSnapshots());
+            }
             int score = player.point;
             
             if(isWin)
@@ -376,162 +386,46 @@ namespace Miner.GameLogic
 
         public void ExitGame()
         {
+            if (player != null && !player.isDestroy)
+            {
+                SessionLogger.Instance.EndLevel((int)player.hp, player.point, CollectAgentSnapshots());
+            }
             isGameOver = true;
             this.RealExitGame();
         }
 
 
-        public void Record()
+        public List<AgentSnapshot> CollectAgentSnapshots()
         {
-            if (player == null || player.isDestroy)
-                return;
-            string Level = isGameOver? "-" : this.level.ToString();
-            string Wave = isGameOver ? "-" : this.wave.ToString();
-            string Avatar_facing = RecordUtils.GetPlayerFace(player);
-            string Avatar_action = RecordUtils.GetCurActions();
-            string Avatar_action_face = RecordUtils.GetActionFaces();
-            string Avatar_action_detail = RecordUtils.GetCurActionDetails();
-            float Avatar_health = player == null ? 0 : player.hp;
-            string Avatar_healthchange = RecordUtils.GetHpChanged();
-            int Avatar_gold = player == null ? 0 : player.point;
-            string Avatar_goldchange = RecordUtils.GetGoldChanged();
-
-            //当前屏幕上所有 agent 的总数
-            int Agent_number = entityDict == null ? 0 : entityDict.Count - 1;
-            string positive_contact = RecordUtils.GetPositiveHit();
-            string negative_contact = RecordUtils.GetNegativeHit();
-
-            //reward 的总数量
-            BaseEntity nearestReward = NearestAgent("Lucky grass", out int rewardInCnt, out int rewardOutCnt, out float rewardNearestDis);
-            int Reward_number = (rewardInCnt + rewardOutCnt);
-            float Reward_nearest_distance = rewardNearestDis;
-            float Reward_nearest_location_x = nearestReward!=null?nearestReward.GetPosition().x:0;
-            float Reward_nearest_location_y = nearestReward!=null?nearestReward.GetPosition().y:0;
-            int Reward_inrange_count = rewardInCnt;
-            int Reward_outrange_count = rewardOutCnt;
-            string Reward_entry_direction = RecordUtils.GetAngle(nearestReward).ToString();
-            string Reward_entry_angle = nearestReward!=null? Enum.GetName(typeof(PositionEnum), nearestReward.config.posType):"none";
-
-            //Threat
-            BaseEntity nearestThreat = NearestAgent("Toxic Vine", out int threateInCnt, out int threatOutCnt, out float threatNearestDis);
-            int Threat_number = threateInCnt + threatOutCnt;
-            float Threat_nearest_distance = threatNearestDis;
-            float Threat_nearest_location_x = nearestThreat!=null?nearestThreat.GetPosition().x:0;
-            float Threat_nearest_location_y = nearestThreat!=null?nearestThreat.GetPosition().y:0;
-            int Threat_projectile_hit = RecordUtils.isPlayHurt;
-            int Threat_projectile_count = RecordUtils.threatShootNum;
-            int Threat_inrange_count = threateInCnt;
-            int Threat_outrange_count = threatOutCnt;
-            string Threat_entry_direction = RecordUtils.GetAngle(nearestThreat).ToString();
-            string Threat_entry_angle = nearestThreat!=null?Enum.GetName(typeof(PositionEnum),nearestThreat.config.posType):"none";
-
-            //Tall Mushrooms
-            BaseEntity nearestTallMushroom = NearestAgent("Tall Mushroom", out int tallInCnt, out int tallOutCnt, out float tallNearestDis);
-            int Coactive1_number = tallOutCnt + tallInCnt;
-            float Coactive1_nearest_distance = tallNearestDis;
-            float Coactive1_nearest_location_x = nearestTallMushroom!=null?nearestTallMushroom.GetPosition().x:0;
-            float Coactive1_nearest_location_y = nearestTallMushroom!=null?nearestTallMushroom.GetPosition().y:0;
-            int Coactive1_inrange_count = tallInCnt;
-            int Coactive1_outrange_count = tallOutCnt;
-            string Coactive1_entry_direction = RecordUtils.GetAngle(nearestTallMushroom).ToString();
-            string Coactive1_entry_angle = nearestTallMushroom!=null? Enum.GetName(typeof(PositionEnum), nearestTallMushroom.config.posType):"none";
-
-            BaseEntity nearestFatMushroom = NearestAgent("Fat Mushroom", out int fatInCnt, out int fatOutCnt, out float fatNearestDis);
-            int Coactive2_number = fatInCnt + fatOutCnt;
-            float Coactive2_nearest_distance = fatNearestDis;
-            float Coactive2_nearest_location_x = nearestFatMushroom!=null?nearestFatMushroom.GetPosition().x:0;
-            float Coactive2_nearest_location_y = nearestFatMushroom!=null?nearestFatMushroom.GetPosition().y:0;
-            int Coactive2_inrange_count = fatInCnt;
-            int Coactive2_outrange_count = fatOutCnt;
-            string Coactive2_entry_direction = RecordUtils.GetAngle(nearestFatMushroom).ToString();
-            string Coactive2_entry_angle = nearestFatMushroom!=null? Enum.GetName(typeof(PositionEnum), nearestFatMushroom.config.posType):"none";
-
-            string Action_event_start = RecordUtils.GetActionStartTimes();
-            string Action_event_end = RecordUtils.GetActionEndTimes();
-            string msg = string.Join(",",
-                Level,
-                Wave,
-                Avatar_facing,
-                Avatar_action,
-                Avatar_action_face,
-                Avatar_action_detail,
-                Avatar_health,
-                Avatar_healthchange,
-                Avatar_gold,
-                Avatar_goldchange,
-                Agent_number.ToString(),
-                positive_contact,
-                negative_contact,
-                Reward_number.ToString(),
-                Reward_nearest_distance.ToString(),
-                Reward_nearest_location_x.ToString(),
-                Reward_nearest_location_y.ToString(),
-                Reward_inrange_count.ToString(),
-                Reward_outrange_count.ToString(),
-                Reward_entry_direction,
-                Reward_entry_angle.ToString(),
-                Threat_number.ToString(),
-                Threat_nearest_distance.ToString(),
-                Threat_nearest_location_x.ToString(),
-                Threat_nearest_location_y.ToString(),
-                Threat_projectile_hit.ToString(),
-                Threat_projectile_count.ToString(),
-                Threat_inrange_count.ToString(),
-                Threat_outrange_count.ToString(),
-                Threat_entry_direction,
-                Threat_entry_angle.ToString(),
-                Coactive1_number.ToString(),
-                Coactive1_nearest_distance.ToString(),
-                Coactive1_nearest_location_x.ToString(),
-                Coactive1_nearest_location_y.ToString(),
-                Coactive1_inrange_count.ToString(),
-                Coactive1_outrange_count.ToString(),
-                Coactive1_entry_direction,
-                Coactive1_entry_angle.ToString(),
-                Coactive2_number.ToString(),
-                Coactive2_nearest_distance.ToString(),
-                Coactive2_nearest_location_x.ToString(),
-                Coactive2_nearest_location_y.ToString(),
-                Coactive2_inrange_count.ToString(),
-                Coactive2_outrange_count.ToString(),
-                Coactive2_entry_direction,
-                Coactive2_entry_angle.ToString(),
-                Action_event_start,
-                Action_event_end
-            );
-            XLogger.Record(msg);
-
-            RecordUtils.Clear();
-        }
-
-        private BaseEntity NearestAgent(string agentName, out int inRangeCnt, out int outRangeCnt, out float nearestDis )
-        {
-            inRangeCnt = 0;
-            outRangeCnt = 0;
-            nearestDis = 999999;
-            if (isGameOver)
+            List<AgentSnapshot> list = new List<AgentSnapshot>();
+            if (player == null || entityDict == null)
             {
-                return null;
+                return list;
             }
-            BaseEntity nearest = null;
             foreach (var kv in entityDict)
             {
                 BaseEntity entity = kv.Value;
-                if(entity.name == agentName)
+                if (entity == null || entity == player || entity.isDestroy || entity.config == null)
                 {
-                    float distance = Vector3.Distance(entity.GetPosition(), player.GetPosition());
-                    if(distance<player.HOOK_CATCH_RADIUS)
-                        inRangeCnt++;
-                    else
-                        outRangeCnt++;
-                    if(distance< nearestDis)
-                    {
-                        nearest = entity;
-                        nearestDis = distance;
-                    }
+                    continue;
                 }
+                if (SessionLogger.Instance.IsExited(entity.Id))
+                {
+                    continue;
+                }
+                string spawnId = entity.config.spawnId ?? "";
+                list.Add(new AgentSnapshot
+                {
+                    EntityId = entity.Id,
+                    SpawnId = spawnId,
+                    AgentType = EntityUtils.GetLogAgentType(entity),
+                    Wave = entity.config.wave,
+                    Distance = Vector3.Distance(entity.GetPosition(), player.GetPosition()),
+                    EnteredAt = entity.logEnteredAt,
+                    DuplicateSpawnWarning = SessionLogger.Instance.IsDuplicateSpawn(spawnId)
+                });
             }
-            return nearest;
+            return list;
         }
     }
 

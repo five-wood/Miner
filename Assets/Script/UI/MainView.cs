@@ -74,12 +74,8 @@ namespace Miner.UI
             pointChangeTxt.transform.GetChild(0).gameObject.SetActive(false);
         }
 
-        public bool startRecord = false;
-        public float recordDuration = 0;
         private void OnStartGame()
         {
-            startRecord = true;
-            recordDuration = 0;
             StartGameByLv(1);
         }   
 
@@ -87,7 +83,7 @@ namespace Miner.UI
         {
             tutoisalGo.SetActive(true);
         }
-        
+
         public void OnCloseTutoisalButtonClick()
         {
             tutoisalGo.SetActive(false);
@@ -243,16 +239,6 @@ namespace Miner.UI
 
         public void Update()
         {
-            if (startRecord)
-            {
-                recordDuration += Time.deltaTime;
-                if(recordDuration>1)
-                {
-                    CombatMgr.Instance().Record();
-                    recordDuration = 0;
-                }
-            }
-
             if (loseTimer>0)
             {
                 loseTimer -= Time.deltaTime;
