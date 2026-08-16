@@ -78,6 +78,7 @@ namespace Miner.GameLogic
                     XLogger.Info(string.Format("Shield Miss"));
                     RecordUtils.actionDetailTypes.Add(ActionResult.MissingBlock);
                     RecordUtils.actionEndTimes.Add(string.Format("block-{0}", DateTime.Now.ToLongTimeString()));
+                    SessionLogger.Instance.Enqueue(new SessionLogEvent { EventType = "block_miss" });
                     Player player = CombatMgr.Instance().player;
                     if(player!=null)
                     {

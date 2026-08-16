@@ -112,6 +112,7 @@ namespace Miner.GameLogic
                         RecordUtils.actionDetailTypes.Add(ActionResult.MissingHook);
                         XLogger.Info(string.Format("Hook Miss"));
                         RecordUtils.actionEndTimes.Add(string.Format("hook-{0}", DateTime.Now.ToLongTimeString()));
+                        SessionLogger.Instance.Enqueue(new SessionLogEvent { EventType = "hook_miss" });
                         modelRender.sprite = modelSpriteDict["hero"];
                     }
                 }
@@ -138,6 +139,7 @@ namespace Miner.GameLogic
             RecordUtils.actionTypes.Add(ActionType.hook);
             RecordUtils.actionFaces.Add(RecordUtils.GetPlayerFace(this));
             RecordUtils.actionStartTimes.Add(string.Format("hook-{0}", DateTime.Now.ToLongTimeString()));
+            SessionLogger.Instance.Enqueue(new SessionLogEvent { EventType = "hook_fire" });
             Vector3 playerPos = go.transform.position;
             Vector3 curPos = hookLine.GetPosition(1);
             Vector3 dir = (targetPos - playerPos).normalized;
@@ -227,13 +229,11 @@ namespace Miner.GameLogic
 
         public void OnSuccessCatch(int entityId)
         {
-            //抓住item
             MoveableEntity entity = CombatMgr.Instance().GetEntityByID(entityId) as MoveableEntity;
             if(entity != null)
             {
                 hookCollisionComp.Disable();
                 catchEntityId = entityId;
-                // entity.go.GetComponent<Collider>().enabled = false;
                 entity.go.transform.SetParent(hookHead.transform);
                 entity.go.transform.localPosition = new Vector3(2,0,0);
                 targetHookPos = entity.go.transform.position;
@@ -241,6 +241,17 @@ namespace Miner.GameLogic
                 totalCatchTime = Vector3.Distance(targetHookPos, playerPos) / HOOK_MOVE_SPEED;
                 catchDuration = 0;
                 XLogger.Info(string.Format("catch [{0}]， pos={1}", entity.name, entity.GetPosition().ToString()));
+
+                float hpChanged = entity.GenerateHp();
+                int pointChanged = entity.GeneratePoint();
+                CombatMgr.Instance().ChangeHp(hpChanged);
+                hp = Mathf.Clamp(hp + hpChanged, 0, 100);
+                point += pointChanged;
+                CombatMgr.Instance().ChangePoint(pointChanged);
+
+                SessionLogger.Instance.MarkExited(entity.Id);
+                bool dup = SessionLogger.Instance.IsDuplicateSpawn(entity.config != null ? entity.config.spawnId : "");
+                SessionLogger.Instance.Enqueue(CombatMgr.AgentEvent("hook_hit", entity, (int)hpChanged, pointChanged, true, dup));
             }
         }
 
@@ -248,59 +259,14 @@ namespace Miner.GameLogic
         {
             if(catchEntityId == entity.Id)
             {
-                RecordUtils.positiveHit.Add(entity.name);
-                CommonHitHandler(entity);
+                return;
             }
-            else
-            {
-                RecordUtils.negativeHit.Add(entity.name);
-                // if(EntityUtils.IsReward(entity))
-                // {
-                //     //do nothing
-                // }
-                // //被动触碰，只触发负收益
-                // else if(EntityUtils.IsCoactive(entity))
-                // {
-                //     float hpChanged = entity.GenerateHp();
-                //     if(hpChanged<0)
-                //     {
-                //         RecordUtils.hpChanged.Add(hpChanged);
-                //         CombatMgr.Instance().ChangeHp(hpChanged);
-                //         hp = Mathf.Clamp(hp + hpChanged, 0, 100);
-                //     }
-                //     int pointChanged = entity.GeneratePoint();
-                //     if(pointChanged < 0)
-                //     {
-                //         point += pointChanged;
-                //         RecordUtils.goldChanged.Add(pointChanged);
-                //         CombatMgr.Instance().ChangePoint(pointChanged);
-                //     }
-                // }
-                // else
-                // {
-                //     CommonHitHandler(entity);
-                // }
-
-                //2026-01-19 迭代：所有的agent被动碰撞统一为-30 gold
-                int pointChanged = -30;
-                point += pointChanged;
-                RecordUtils.goldChanged.Add(pointChanged);
-                CombatMgr.Instance().ChangePoint(pointChanged);
-            }
- 
-        }
-
-        public void CommonHitHandler(MoveableEntity entity)
-        {
-            float hpChanged = entity.GenerateHp();
-            RecordUtils.hpChanged.Add(hpChanged);
-            CombatMgr.Instance().ChangeHp(hpChanged);
-            hp = Mathf.Clamp(hp + hpChanged, 0, 100);
-            int pointChanged = entity.GeneratePoint();
-            RecordUtils.goldChanged.Add(pointChanged);
+            int pointChanged = -30;
             point += pointChanged;
             CombatMgr.Instance().ChangePoint(pointChanged);
-            XLogger.Info(string.Format("{0} hit the player, hitPos={1}, Caught={2}, hpChanged={3}, newHp={4}, scoreChanged={5}, newScore={6}", entity.name, entity.GetPosition().ToString(), catchEntityId == entity.Id, hpChanged, hp, pointChanged, point));
+            SessionLogger.Instance.MarkExited(entity.Id);
+            bool dup = SessionLogger.Instance.IsDuplicateSpawn(entity.config != null ? entity.config.spawnId : "");
+            SessionLogger.Instance.Enqueue(CombatMgr.AgentEvent("collision", entity, 0, pointChanged, true, dup));
         }
 
         public void BeHurt(float damage, BaseEntity entity)
@@ -310,6 +276,8 @@ namespace Miner.GameLogic
             hp = Mathf.Clamp(hp+damage, 0, 100);
             CombatMgr.Instance().ChangeHp(damage);
             XLogger.Info(string.Format("{3} shoot the player, hpChanged={0}, newHp={1}, theatPos={2}",damage, hp, entity.GetPosition().ToString(),entity.name));
+            bool dup = SessionLogger.Instance.IsDuplicateSpawn(entity != null && entity.config != null ? entity.config.spawnId : "");
+            SessionLogger.Instance.Enqueue(CombatMgr.AgentEvent("shot", entity, (int)damage, 0, true, dup));
         }
 
 

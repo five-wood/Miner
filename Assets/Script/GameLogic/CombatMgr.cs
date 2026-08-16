@@ -206,6 +206,9 @@ namespace Miner.GameLogic
                 Vector3 targetPos = player.GetPosition();
                 entity.SetTargetPos(targetPos, agentConfig.speed);
             }
+            entity.logEnteredAt = this.gameTime;
+            bool duplicate = SessionLogger.Instance.RegisterSpawnId(agentConfig.spawnId);
+            SessionLogger.Instance.Enqueue(AgentEvent("entry", entity, 0, 0, true, duplicate));
             return entity;
         }
 
@@ -378,6 +381,9 @@ namespace Miner.GameLogic
                 float y = entityPos.y>playerPos.y?1:-1;
                 Vector3 pos = playerPos+new Vector3(x*100, y*100, entityPos.z);
                 entity.BeHitAway(pos);
+                SessionLogger.Instance.MarkExited(entity.Id);
+                bool dup = SessionLogger.Instance.IsDuplicateSpawn(entity.config != null ? entity.config.spawnId : "");
+                SessionLogger.Instance.Enqueue(AgentEvent("block", entity, 0, 0, true, dup));
                 XLogger.Info(string.Format(" shield-bashed the agent [{0}], pos={1}", entity.name, entityPos.ToString()));
                 // entity.Destroy();
                 // entityDict.Remove(entityId);
@@ -426,6 +432,29 @@ namespace Miner.GameLogic
                 });
             }
             return list;
+        }
+
+        public static SessionLogEvent AgentEvent(string eventType, BaseEntity entity, int hpDelta, int goldDelta, bool inField, bool duplicateWarning)
+        {
+            float dist = float.NaN;
+            Player p = CombatMgr.Instance().player;
+            if (entity != null && p != null)
+            {
+                dist = Vector3.Distance(entity.GetPosition(), p.GetPosition());
+            }
+            return new SessionLogEvent
+            {
+                EventType = eventType,
+                EntityId = entity != null ? entity.Id : 0,
+                SpawnId = entity != null && entity.config != null ? (entity.config.spawnId ?? "") : "",
+                AgentType = EntityUtils.GetLogAgentType(entity),
+                Wave = entity != null && entity.config != null ? entity.config.wave : 0,
+                HpDelta = hpDelta,
+                GoldDelta = goldDelta,
+                Distance = dist,
+                InField = inField,
+                DuplicateSpawnWarning = duplicateWarning
+            };
         }
     }
 
