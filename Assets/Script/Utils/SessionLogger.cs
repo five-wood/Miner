@@ -128,7 +128,35 @@ namespace Miner.GameLogic
             {
                 return;
             }
+            if (!CombatMgr.Instance().IsPlayingGame())
+            {
+                return;
+            }
+            if (evt.EntityId != 0 && IsExited(evt.EntityId)
+                && evt.EventType != "hook_hit" && evt.EventType != "block" && evt.EventType != "collision")
+            {
+                return;
+            }
             _queue.Add(evt);
+        }
+
+        public void FlushPendingEvents(int avatarHp, int avatarGold, List<AgentSnapshot> agents)
+        {
+            if (_writer == null || !_levelActive) return;
+            if (_queue.Count == 0 && !_pendingLevelStart)
+            {
+                return;
+            }
+            _second++;
+            FlushSecond(avatarHp, avatarGold, agents);
+            _secondAccum = 0f;
+            _writer.Flush();
+        }
+
+        public void DiscardPendingSecond()
+        {
+            _queue.Clear();
+            _secondAccum = 0f;
         }
 
         public void Tick(float deltaTime, int avatarHp, int avatarGold, List<AgentSnapshot> agents)
@@ -152,7 +180,7 @@ namespace Miner.GameLogic
             {
                 return;
             }
-            if (_secondAccum > 0f || _queue.Count > 0 || _pendingLevelStart)
+            if (_queue.Count > 0 || _pendingLevelStart)
             {
                 _second++;
                 FlushSecond(avatarHp, avatarGold, agents);
@@ -247,6 +275,7 @@ namespace Miner.GameLogic
                 WriteRow(_second, _level, 0, "", "", nReward, nThreat, nFat, nTall, "", 0, 0, hp, gold, 0, "", 0, float.NaN, "");
             }
             _queue.Clear();
+            _writer.Flush();
         }
 
         private void WriteLevelEnd(int avatarHp, int avatarGold, List<AgentSnapshot> agents)

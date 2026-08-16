@@ -229,6 +229,10 @@ namespace Miner.GameLogic
             {
                 SessionLogger.Instance.EndLevel((int)player.hp, player.point, CollectAgentSnapshots());
             }
+            else
+            {
+                SessionLogger.Instance.FlushPendingEvents((int)player.hp, player.point, CollectAgentSnapshots());
+            }
             int score = player.point;
             
             if(isWin)
@@ -257,6 +261,7 @@ namespace Miner.GameLogic
             this.pause = false;
             player.hp = 100;
             player.point = 0;
+            SessionLogger.Instance.DiscardPendingSecond();
             List<int> destroyList = new List<int>();
             //清除所有的agent
             foreach(var kv in entityDict)
@@ -297,6 +302,10 @@ namespace Miner.GameLogic
 
         public void RealExitGame()
         {
+            if (player != null && !player.isDestroy)
+            {
+                SessionLogger.Instance.EndLevel((int)player.hp, player.point, CollectAgentSnapshots());
+            }
             //销毁游戏节点
             player.ExitGame();
             foreach (var kv in entityDict)

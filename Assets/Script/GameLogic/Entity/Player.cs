@@ -244,14 +244,16 @@ namespace Miner.GameLogic
 
                 float hpChanged = entity.GenerateHp();
                 int pointChanged = entity.GeneratePoint();
-                CombatMgr.Instance().ChangeHp(hpChanged);
+                float before = hp;
                 hp = Mathf.Clamp(hp + hpChanged, 0, 100);
+                int effectiveHp = Mathf.RoundToInt(hp - before);
+                CombatMgr.Instance().ChangeHp(effectiveHp);
                 point += pointChanged;
                 CombatMgr.Instance().ChangePoint(pointChanged);
 
                 SessionLogger.Instance.MarkExited(entity.Id);
                 bool dup = SessionLogger.Instance.IsDuplicateSpawn(entity.config != null ? entity.config.spawnId : "");
-                SessionLogger.Instance.Enqueue(CombatMgr.AgentEvent("hook_hit", entity, (int)hpChanged, pointChanged, true, dup));
+                SessionLogger.Instance.Enqueue(CombatMgr.AgentEvent("hook_hit", entity, effectiveHp, pointChanged, true, dup));
             }
         }
 
@@ -275,13 +277,19 @@ namespace Miner.GameLogic
 
         public void BeHurt(float damage, BaseEntity entity)
         {
+            if (entity != null && SessionLogger.Instance.IsExited(entity.Id))
+            {
+                return;
+            }
             RecordUtils.isPlayHurt = 1;
             RecordUtils.hpChanged.Add(damage);
-            hp = Mathf.Clamp(hp+damage, 0, 100);
-            CombatMgr.Instance().ChangeHp(damage);
-            XLogger.Info(string.Format("{3} shoot the player, hpChanged={0}, newHp={1}, theatPos={2}",damage, hp, entity.GetPosition().ToString(),entity.name));
+            float before = hp;
+            hp = Mathf.Clamp(hp + damage, 0, 100);
+            int effectiveHp = Mathf.RoundToInt(hp - before);
+            CombatMgr.Instance().ChangeHp(effectiveHp);
+            XLogger.Info(string.Format("{3} shoot the player, hpChanged={0}, newHp={1}, theatPos={2}",effectiveHp, hp, entity.GetPosition().ToString(),entity.name));
             bool dup = SessionLogger.Instance.IsDuplicateSpawn(entity != null && entity.config != null ? entity.config.spawnId : "");
-            SessionLogger.Instance.Enqueue(CombatMgr.AgentEvent("shot", entity, (int)damage, 0, true, dup));
+            SessionLogger.Instance.Enqueue(CombatMgr.AgentEvent("shot", entity, effectiveHp, 0, true, dup));
         }
 
 

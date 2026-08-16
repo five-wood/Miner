@@ -1,4 +1,5 @@
 using UnityEngine;
+using System;
 using System.Collections.Generic;
 using System.IO;
 
@@ -47,9 +48,10 @@ namespace Miner.GameLogic
                 agentConfig.posType = GetPosEnum(item["Position"]);
                 agentConfig.speed = float.Parse(item["Speed"]);
                 agentConfig.atkInterval = float.Parse(item["Interval to Atk"]);
-                if (item.ContainsKey("spawn_id"))
+                string spawnId = ReadSpawnId(item);
+                if (spawnId != null)
                 {
-                    agentConfig.spawnId = item["spawn_id"] == null ? "" : item["spawn_id"].Trim();
+                    agentConfig.spawnId = spawnId;
                 }
                 else
                 {
@@ -67,6 +69,18 @@ namespace Miner.GameLogic
             {
                 item.Value.Sort((a, b) => a.bornTime.CompareTo(b.bornTime));
             }
+        }
+
+        private static string ReadSpawnId(Dictionary<string, string> item)
+        {
+            foreach (var key in item.Keys)
+            {
+                if (string.Equals(key, "spawn_id", StringComparison.OrdinalIgnoreCase))
+                {
+                    return item[key] == null ? "" : item[key].Trim();
+                }
+            }
+            return null;
         }
 
         private static PositionEnum GetPosEnum(string posType)
