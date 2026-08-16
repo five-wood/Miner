@@ -9,7 +9,10 @@ namespace Miner.UI
     public class MainView: MonoBehaviour
     {
         public Button StartButton;
+        public Button TutoisalButton;
+        public Button CloseTutoisalButton;
         public Button ExitButton;
+
 
         public Slider HpSlider;
 
@@ -18,6 +21,7 @@ namespace Miner.UI
         public GameObject gamingGo;
         public Text pointText;
         public GameObject finalGo;
+        public GameObject tutoisalGo;
 
         public GameObject afterGo;
         public Text resultTxt;
@@ -47,10 +51,13 @@ namespace Miner.UI
         {
             StartButton.onClick.AddListener(OnStartGame);
             ExitButton.onClick.AddListener(OnExitGame);
+            TutoisalButton.onClick.AddListener(OnTutoisalButtonClick);
+            CloseTutoisalButton.onClick.AddListener(OnCloseTutoisalButtonClick);
             levelInputField.onValueChanged.AddListener(OnLevelInputChanged);
             nextBtn.onClick.AddListener(OnNextBtnClick);
             exitButton.onClick.AddListener(OnExitButtonClick);
             beforeGo.SetActive(true);
+            tutoisalGo.SetActive(false);
             gamingGo.SetActive(false);
             afterGo.SetActive(false);
             hpAnim = hpChangeTxt.gameObject.GetComponent<Animator>();
@@ -76,6 +83,16 @@ namespace Miner.UI
             StartGameByLv(1);
         }   
 
+        public void OnTutoisalButtonClick()
+        {
+            tutoisalGo.SetActive(true);
+        }
+        
+        public void OnCloseTutoisalButtonClick()
+        {
+            tutoisalGo.SetActive(false);
+        }
+
         public void StartGameByLv(int lv)
         {
             if (lv > BaseConfig.maxLevel)
@@ -86,6 +103,7 @@ namespace Miner.UI
             this._level = lv;
             CombatMgr.Instance().LoadGame(this._level);
             beforeGo.SetActive(false);
+            tutoisalGo.SetActive(false);
             gamingGo.SetActive(true);
             afterGo.SetActive(false);
             hpChangeTxt.text = "";
@@ -106,12 +124,14 @@ namespace Miner.UI
             if(force)
             {
                 beforeGo.SetActive(true);
+                tutoisalGo.SetActive(false);
                 gamingGo.SetActive(false);
                 afterGo.SetActive(false);
             }
             else
             {
                 beforeGo.SetActive(false);
+                tutoisalGo.SetActive(false);
                 gamingGo.SetActive(false);
                 afterGo.SetActive(true);
                 resultTxt.text = isWin?"You Win":"Game Over";
@@ -154,6 +174,7 @@ namespace Miner.UI
             if(this._level == BaseConfig.maxLevel)
             {
                 beforeGo.SetActive(true);
+                tutoisalGo.SetActive(false);
                 gamingGo.SetActive(false);
                 afterGo.SetActive(false);
             }
@@ -166,6 +187,7 @@ namespace Miner.UI
         private void OnExitButtonClick()
         {
             beforeGo.SetActive(true);
+            tutoisalGo.SetActive(false);
             gamingGo.SetActive(false);
             afterGo.SetActive(false);
             CombatMgr.Instance().RealExitGame();
@@ -238,6 +260,7 @@ namespace Miner.UI
                 if(loseTimer<=0) //����ʱ�������ص���һ�ؼ�����
                 {
                     beforeGo.SetActive(false);
+                    tutoisalGo.SetActive(false);
                     gamingGo.SetActive(true);
                     afterGo.SetActive(false);
                     ResetAnim();
