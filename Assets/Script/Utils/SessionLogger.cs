@@ -174,6 +174,23 @@ namespace Miner.GameLogic
             }
         }
 
+        public void TickDeathWait(float deltaTime, int avatarGold)
+        {
+            if (_writer == null || !_levelActive)
+            {
+                return;
+            }
+            _secondAccum += deltaTime;
+            while (_secondAccum >= 1f)
+            {
+                _second++;
+                WriteRow(_second, _level, 0, "", "", 0, 0, 0, 0,
+                    "death_wait", 0, 0, 0, avatarGold, 0, "", 0, float.NaN, "");
+                _secondAccum -= 1f;
+            }
+            _writer.Flush();
+        }
+
         public void EndLevel(int avatarHp, int avatarGold, List<AgentSnapshot> agents)
         {
             if (_writer == null || !_levelActive)

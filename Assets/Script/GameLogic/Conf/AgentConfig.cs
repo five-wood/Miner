@@ -9,6 +9,7 @@ namespace Miner.GameLogic
         public int level;
         public int wave;
         public float bornTime;
+        public float totalTime;
         public string agentName;
         public PositionEnum posType;
         public float speed;

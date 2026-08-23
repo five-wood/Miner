@@ -130,10 +130,11 @@ namespace Miner.UI
                 tutoisalGo.SetActive(false);
                 gamingGo.SetActive(false);
                 afterGo.SetActive(true);
-                resultTxt.text = isWin?"You Win":"Game Over";
+                resultTxt.text = isWin ? "You Win" : "Game Over";
                 winGo.SetActive(isWin);
                 loseGo.SetActive(!isWin);
-                winTimer = 0;loseTimer = 0;
+                winTimer = 0;
+                loseTimer = 0;
                 if (isWin)
                 {
                     winScoreTxt.text = string.Format("{0}", point);
@@ -146,10 +147,28 @@ namespace Miner.UI
                 else
                 {
                     loseScoreTxt.text = point.ToString();
-                    loseTimer = 5;
-                    loseTimerTxt.text = string.Format("{0} seconds", (int)(loseTimer+1));
+                    loseTimerTxt.text = "5 seconds";
                 }
             }
+        }
+        public void ShowGameplayAfterDeathWait()
+        {
+            beforeGo.SetActive(false);
+            tutoisalGo.SetActive(false);
+            gamingGo.SetActive(true);
+            afterGo.SetActive(false);
+            ResetAnim();
+        }
+
+        public void HandleTerminalFailure(int failedLevel, int score)
+        {
+            if (failedLevel < BaseConfig.maxLevel)
+            {
+                CombatMgr.Instance().RealExitGame();
+                StartGameByLv(failedLevel + 1);
+                return;
+            }
+            OnGameOver(false, false, score);
         }
 
         private void Destroy()
@@ -161,13 +180,13 @@ namespace Miner.UI
         private void OnLevelInputChanged(string levelInput)
         {
             int level = int.Parse(levelInput);
-            _level = level>0?level:1;
+            _level = level > 0 ? level : 1;
         }
 
         private void OnNextBtnClick()
         {
             CombatMgr.Instance().RealExitGame();
-            if(this._level == BaseConfig.maxLevel)
+            if (this._level == BaseConfig.maxLevel)
             {
                 beforeGo.SetActive(true);
                 tutoisalGo.SetActive(false);
@@ -190,7 +209,7 @@ namespace Miner.UI
         }
 
         private float hpChanged = 0;
-        private float hpJumpDelay =0;
+        private float hpJumpDelay = 0;
         public void ChangeHp(float value)
         {
             if (Mathf.Approximately(value, 0)) return;
@@ -216,11 +235,11 @@ namespace Miner.UI
         private float pointJumpDelay = 0;
         public void ChangePoint(int curValue)
         {
-            if (curValue == 0)
-                return;
+            if (curValue == 0) return;
             pointChanged += curValue;
             pointJumpDelay = Math.Max(0.1f, Mathf.Min(pointJumpDelay + 0.2f, 1.2f));
         }
+
         private void JumpPoint(int curValue)
         {
             pointChangeTxt.enabled = true;
@@ -239,46 +258,29 @@ namespace Miner.UI
 
         public void Update()
         {
-            if (loseTimer>0)
+            if (CombatMgr.Instance().IsDeathWaiting)
             {
-                loseTimer -= Time.deltaTime;
-                loseTimerTxt.text = string.Format("{0} seconds", (int)(loseTimer + 1));
-                if(loseTimer<=0) //����ʱ�������ص���һ�ؼ�����
-                {
-                    beforeGo.SetActive(false);
-                    tutoisalGo.SetActive(false);
-                    gamingGo.SetActive(true);
-                    afterGo.SetActive(false);
-                    ResetAnim();
-                    CombatMgr.Instance().ContinueGame();
-                }
+                loseTimerTxt.text = string.Format("{0} seconds", Mathf.CeilToInt(CombatMgr.Instance().DeathWaitRemaining));
             }
-            if(winTimer>0)
+            if (winTimer > 0)
             {
                 winTimer -= Time.deltaTime;
-                if(winTimer<=0)
+                if (winTimer <= 0)
                 {
                     this.nextBtn.gameObject.SetActive(true);
                 }
             }
-            
-            if(hpJumpDelay>0)
+            if (hpJumpDelay > 0)
             {
                 hpJumpDelay -= Time.deltaTime;
-                if(hpJumpDelay<0)
-                {
-                    JumpHp(this.hpChanged);
-                }
+                if (hpJumpDelay < 0) JumpHp(this.hpChanged);
             }
-
-            if(pointJumpDelay>0)
+            if (pointJumpDelay > 0)
             {
                 pointJumpDelay -= Time.deltaTime;
-                if(pointJumpDelay<0)
-                {
-                    JumpPoint(this.pointChanged);
-                }
+                if (pointJumpDelay < 0) JumpPoint(this.pointChanged);
             }
         }
+
     }
 }

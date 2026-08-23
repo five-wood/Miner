@@ -19,6 +19,13 @@ namespace Miner.GameLogic
         private int lastAgentIndex = -1;
         public int wave = 0;
         private bool pause = false;
+        private bool deathWaiting = false;
+        private float deathWaitRemaining = 0f;
+        private int deathGold = 0;
+        private const float DeathWaitDuration = 5f;
+
+        public bool IsDeathWaiting { get { return deathWaiting; } }
+        public float DeathWaitRemaining { get { return deathWaitRemaining; } }
 
         public static float anchorX = -48.2f;
         public static float anchorY = 26.2f;
@@ -74,6 +81,9 @@ namespace Miner.GameLogic
             this.isGameOver = false;
             this.level = level;
             this.pause = false;
+            this.deathWaiting = false;
+            this.deathWaitRemaining = 0f;
+            this.deathGold = 0;
             this.wave = 0;
             CreatePlayer();
             SessionLogger.Instance.StartLevel(this.level);
@@ -82,57 +92,170 @@ namespace Miner.GameLogic
         private List<int> _destroyList = new List<int>();
         public void UpdateGame(float deltaTime)
         {
-            if(!IsPlayingGame())
+            if (isGameOver || pause)
             {
                 return;
             }
 
-            //检查是否需要创建新的怪物
+            if (deathWaiting)
+            {
+                float waitStep = GetDeathWaitStep(deathWaitRemaining, deltaTime);
+                this.gameTime += waitStep;
+                deathWaitRemaining -= waitStep;
+                SessionLogger.Instance.TickDeathWait(waitStep, deathGold);
+                if (deathWaitRemaining <= 0f)
+                {
+                    CompleteDeathWait();
+                }
+                return;
+            }
             this.gameTime += deltaTime;
-            //Debug.LogError("deltaTime = " + deltaTime + " , gameTime " + this.gameTime + "frameCoutn "+Time.frameCount);
             bool hadNextAgent = this.CheckRound();
-            
-            //处理延迟销毁的实体
+            UpdateEntities(deltaTime);
+
+            if (player != null && !player.isDestroy)
+            {
+                SessionLogger.Instance.Tick(deltaTime, (int)player.hp, player.point, CollectAgentSnapshots());
+            }
+            UpdateMainView();
+
+            if (player.hp <= 0)
+            {
+                BeginDeathWait();
+            }
+            else if (!hadNextAgent && entityDict.Count == 1)
+            {
+                FinishLevel(true);
+            }
+        }
+
+        private void UpdateEntities(float deltaTime)
+        {
             _destroyList.Clear();
-            foreach(var entityKV in entityDict)
+            foreach (var entityKV in entityDict)
             {
                 BaseEntity entity = entityKV.Value;
                 entity.Update(deltaTime);
-                if(entity.delayDestoryTime > 0)
+                if (entity.delayDestoryTime > 0)
                 {
                     entity.delayDestoryTime -= deltaTime;
-                    if(entity.delayDestoryTime <= 0)
+                    if (entity.delayDestoryTime <= 0)
                     {
                         entity.delayDestoryTime = 0;
                         _destroyList.Add(entityKV.Key);
                     }
                 }
             }
-            for(int i = 0; i < _destroyList.Count; i++)
+            for (int i = 0; i < _destroyList.Count; i++)
             {
-                entityDict[_destroyList[i]].Destroy();
-                entityDict.Remove(_destroyList[i]);
+                if (entityDict.ContainsKey(_destroyList[i]))
+                {
+                    entityDict[_destroyList[i]].Destroy();
+                    entityDict.Remove(_destroyList[i]);
+                }
             }
+        }
 
-            if (player != null && !player.isDestroy)
+        private void UpdateMainView()
+        {
+            if (mainView == null || player == null)
             {
-                SessionLogger.Instance.Tick(deltaTime, (int)player.hp, player.point, CollectAgentSnapshots());
+                return;
             }
+            mainView.HpSlider.value = Math.Max(0, player.hp) / 100.0f;
+            mainView.pointText.text = string.Format("{0}", player.point);
+        }
 
-            //更新主界面
-            if(mainView != null)
+        public static float GetDeathWaitStep(float remaining, float deltaTime)
+        {
+            return Math.Min(Math.Max(remaining, 0f), Math.Max(deltaTime, 0f));
+        }
+
+        public static bool HasFutureConfig(List<AgentConfig> agentConfigs, int lastIndex, float currentTime)
+        {
+            return lastIndex < agentConfigs.Count - 1
+                && agentConfigs[lastIndex + 1].totalTime > currentTime;
+        }
+
+        private void BeginDeathWait()
+        {
+            deathGold = player.point;
+            SessionLogger.Instance.FlushPendingEvents(0, deathGold, new List<AgentSnapshot>());
+            ClearAgents();
+            if (!HasFutureConfig(BaseConfig.GetLevelConfig(level), lastAgentIndex, gameTime))
             {
-                //更新血条
-                mainView.HpSlider.value = Math.Max(0, player.hp)/100.0f;
-                // Debug.Log("HpSlider.value="+mainView.HpSlider.value);
-                //更新积分
-                mainView.pointText.text = string.Format("{0}", player.point);
+                FinishLevel(false);
+                return;
             }
-
-            //血量见底失败,或者所有agent消失只剩玩家
-            if (player.hp<=0 || (!hadNextAgent && entityDict.Count == 1))
+            deathWaiting = true;
+            if (mainView != null)
             {
-                OnGameOver();
+                mainView.OnGameOver(false, false, deathGold);
+            }
+            deathWaitRemaining = DeathWaitDuration;
+        }
+
+        private void CompleteDeathWait()
+        {
+            List<AgentConfig> configs = BaseConfig.GetLevelConfig(level);
+            lastAgentIndex = FindLastDueConfigIndex(configs, lastAgentIndex, gameTime);
+            player.hp = 100;
+            player.point = 0;
+            deathWaiting = false;
+            deathWaitRemaining = 0f;
+            if (!HasFutureConfig(configs, lastAgentIndex, gameTime))
+            {
+                FinishLevel(false);
+                return;
+            }
+            if (mainView != null)
+            {
+                mainView.ShowGameplayAfterDeathWait();
+            }
+        }
+
+        private void ClearAgents()
+        {
+            List<int> destroyList = new List<int>();
+            foreach (var kv in entityDict)
+            {
+                if (kv.Value != player)
+                {
+                    destroyList.Add(kv.Key);
+                }
+            }
+            for (int i = 0; i < destroyList.Count; i++)
+            {
+                BaseEntity entity = entityDict[destroyList[i]];
+                entity.Destroy();
+                entityDict.Remove(destroyList[i]);
+            }
+        }
+
+        private void FinishLevel(bool isWin)
+        {
+            isGameOver = true;
+            int score = player != null ? player.point : 0;
+            if (isWin)
+            {
+                SessionLogger.Instance.EndLevel((int)player.hp, score, CollectAgentSnapshots());
+            }
+            else
+            {
+                SessionLogger.Instance.EndLevel(0, score, new List<AgentSnapshot>());
+            }
+            SocketManager.Instance.SendLevelEnd(level, isWin, score);
+            XLogger.Flush();
+            if (mainView != null)
+            {
+                if (isWin)
+                {
+                    mainView.OnGameOver(false, true, score);
+                }
+                else
+                {
+                    mainView.HandleTerminalFailure(level, score);
+                }
             }
         }
 
@@ -157,23 +280,29 @@ namespace Miner.GameLogic
             return !isGameOver && !pause;
         }
 
+        public static int FindLastDueConfigIndex(List<AgentConfig> agentConfigs, int lastIndex, float currentTime)
+        {
+            int index = lastIndex;
+            while (index < agentConfigs.Count - 1 && agentConfigs[index + 1].totalTime <= currentTime)
+            {
+                index++;
+            }
+            return index;
+        }
+
         public bool CheckRound()
         {
             List<AgentConfig> agentConfigs = BaseConfig.GetLevelConfig(this.level);
-            if(this.lastAgentIndex >= agentConfigs.Count-1)
+            int dueThrough = FindLastDueConfigIndex(agentConfigs, this.lastAgentIndex, this.gameTime);
+            for (int i = this.lastAgentIndex + 1; i <= dueThrough; i++)
             {
-                // Debug.LogError("本关卡结束，所有怪物都已经创建完毕");
-                return false;
-            }
-            AgentConfig agentConfig = agentConfigs[this.lastAgentIndex+1];
-            if(this.gameTime >= agentConfig.bornTime)
-            {
-                XLogger.Info("Create Agent ["+agentConfig.agentName+"],gameTime ="+ this.gameTime+"s");
-                this.lastAgentIndex++;
+                AgentConfig agentConfig = agentConfigs[i];
+                XLogger.Info("Create Agent ["+agentConfig.agentName+"],gameTime ="+ this.gameTime +"s");
                 CreateItem(agentConfig);
                 this.wave = agentConfig.wave;
             }
-            return true;
+            this.lastAgentIndex = dueThrough;
+            return this.lastAgentIndex < agentConfigs.Count - 1;
         }
 
         public MoveableEntity CreateItem(AgentConfig agentConfig)
@@ -256,49 +385,6 @@ namespace Miner.GameLogic
             XLogger.Flush();
         }
 
-        public void ContinueGame()
-        {
-            this.pause = false;
-            player.hp = 100;
-            player.point = 0;
-            SessionLogger.Instance.DiscardPendingSecond();
-            List<int> destroyList = new List<int>();
-            //清除所有的agent
-            foreach(var kv in entityDict)
-            {
-                BaseEntity entity = kv.Value;
-                if(entity.Id!=player.Id)
-                {
-                    // if(Vector3.Distance(entity.GetPosition(), player.GetPosition())<player.HOOK_CATCH_RADIUS)
-                    {
-                        destroyList.Add(entity.Id);
-                    }
-                }
-            }
-            for(int x = 0; x<destroyList.Count; x++)
-            {
-                int eid = destroyList[x];
-                BaseEntity entity = entityDict[eid];
-                entity.Destroy();
-                entityDict.Remove(eid);
-            }
-            //entityDict.Clear();
-            //entityDict.Add(player.Id, player);
-            //从当前关死亡的那一个wave开始生成agent，游戏时间也调整
-            List<AgentConfig> agentConfigs = BaseConfig.GetLevelConfig(this.level);
-            //Debug.LogError(" lastAgentIndex " + lastAgentIndex + ", count " + agentConfigs.Count);
-            for (int i = lastAgentIndex; i>=0; i--)
-            {
-                //找到对应wave
-                if(i>0 && agentConfigs[i].wave != agentConfigs[i-1].wave)
-                {
-                    this.lastAgentIndex = i - 1;
-                    this.gameTime = agentConfigs[i].bornTime;
-                    break;
-                }
-            }
-            isGameOver = false;
-        }
 
         public void RealExitGame()
         {
@@ -307,7 +393,10 @@ namespace Miner.GameLogic
                 SessionLogger.Instance.EndLevel((int)player.hp, player.point, CollectAgentSnapshots());
             }
             //销毁游戏节点
-            player.ExitGame();
+            if (player != null && !player.isDestroy)
+            {
+                player.ExitGame();
+            }
             foreach (var kv in entityDict)
             {
                 kv.Value.Destroy();

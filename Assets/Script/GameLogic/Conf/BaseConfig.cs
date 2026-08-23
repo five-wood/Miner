@@ -45,6 +45,7 @@ namespace Miner.GameLogic
                 agentConfig.level = int.Parse(item["Run"]);
                 agentConfig.wave = int.Parse(item["Wave"]);
                 agentConfig.bornTime = float.Parse(item["Run Time"]);
+                agentConfig.totalTime = float.Parse(item["Total Time"]);
                 agentConfig.agentName = item["Agent"];
                 agentConfig.posType = GetPosEnum(item["Position"]);
                 agentConfig.speed = float.Parse(item["Speed"]);
@@ -67,10 +68,10 @@ namespace Miner.GameLogic
                 levelConfigs[level].Add(agentConfig);
             }
             WarnDuplicateSpawnIds();
-            //按时间排序,从早到晚
+            //按Total Time排序,从早到晚
             foreach(var item in levelConfigs)
             {
-                item.Value.Sort((a, b) => a.bornTime.CompareTo(b.bornTime));
+                item.Value.Sort((a, b) => a.totalTime.CompareTo(b.totalTime));
             }
         }
 
