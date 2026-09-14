@@ -11,6 +11,8 @@ namespace Miner.GameLogic
         public float moveSpeed = 5f;
 
         public static Dictionary<int, List<AgentConfig>> levelConfigs = new Dictionary<int, List<AgentConfig>>();
+        public static Dictionary<string, AgentStats> agentStats = new Dictionary<string, AgentStats>();
+
 
         public virtual void InitConfig(){}
 
@@ -146,6 +148,30 @@ namespace Miner.GameLogic
                 return null;
             }
             return levelConfigs[level];
+        }
+
+        public static void InitAgentStats(string path)
+        {
+            agentStats.Clear();
+            List<Dictionary<string, string>> data = CSVReader.ReadCSV(path);
+            foreach (var item in data)
+            {
+                AgentStats stats = new AgentStats();
+                stats.hp = float.Parse(item["HP"]);
+                stats.gold = int.Parse(item["Gold"]);
+                stats.shotHp = float.Parse(item["ShotHP"]);
+                agentStats[item["Agent"]] = stats;
+            }
+        }
+
+        public static AgentStats GetAgentStats(string agent)
+        {
+            if (agent == null || !agentStats.ContainsKey(agent))
+            {
+                CSVReader.ShowNativePopup("agent_stats.csv 缺少 Agent：" + agent, "异常");
+                return new AgentStats();
+            }
+            return agentStats[agent];
         }
 
 

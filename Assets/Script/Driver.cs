@@ -12,6 +12,7 @@ public class Driver : MonoBehaviour
         Screen.SetResolution(1920, 1080, true);
         string cfgPath = Application.dataPath + "/cfg.csv";
         BaseConfig.InitAllLevel(cfgPath);
+        BaseConfig.InitAgentStats(Application.dataPath + "/agent_stats.csv");
 
         string logFileName = string.Format("log_{0}_{1}.csv", System.DateTime.Now.ToShortDateString(), System.DateTime.Now.ToShortTimeString()).Replace("/", "_").Replace(":", "_");
         Debug.Log("logFileName " + logFileName);

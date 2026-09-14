@@ -17,7 +17,7 @@ namespace Miner.GameLogic
             bulletComp.Shot(player.go.transform.position, go.transform.position,()=> {
                 if(player!=null && !player.isDestroy)
                 {
-                    player.BeHurt(-5, this) ;
+                    player.BeHurt(Stats().shotHp, this) ;
                 }
             });
         }
@@ -25,16 +25,6 @@ namespace Miner.GameLogic
         public override string GetPrefabPath()
         {
             return ResConst.threatPath;
-        }
-
-        public override float GenerateHp()
-        {
-            return -15;
-        }
-
-        public override int GeneratePoint()
-        {
-            return -20;
         }
 
         public override void Destroy()

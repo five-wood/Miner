@@ -2158,10 +2158,12 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: Forest explorer Enoki foraging the natural lands for raw gold to become
+  m_Text: "Forest explorer Enoki is foraging the natural lands for raw gold to become
     rich. In his hunt, he upset the forest God for disrupting the land, and now the
     hunt has gotten dangerous as the forest comes to life. Find out who is a friend
-    and who is a foe as you collect as much gold as you can.
+    and who is a foe as you collect as much gold as you can.\nAlways grab or block
+    whatever comes your way \u2014 if you let anything slip past and hit you, you'll
+    lose 0 gold points."
 --- !u!114 &4429915397301465112
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2842,7 +2844,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: Grab your targe
+  m_Text: Grab your target
 --- !u!1 &5173589261863903266
 GameObject:
   m_ObjectHideFlags: 0
@@ -3538,6 +3540,7 @@ MonoBehaviour:
   pointText: {fileID: 2344876334412532864}
   finalGo: {fileID: 5707818890206034921}
   tutoisalGo: {fileID: 4749076434566208519}
+  levelTipText: {fileID: 2796721439725946636}
   afterGo: {fileID: 353978577766434280}
   resultTxt: {fileID: 393400981744851083}
   nextBtn: {fileID: 7790647491926321666}
@@ -3551,8 +3554,6 @@ MonoBehaviour:
   loseGo: {fileID: 6502705091303117294}
   loseTimerTxt: {fileID: 2608746165697994233}
   loseScoreTxt: {fileID: 7178704309278444368}
-  startRecord: 0
-  recordDuration: 0
 --- !u!1 &5610063752128026238
 GameObject:
   m_ObjectHideFlags: 0

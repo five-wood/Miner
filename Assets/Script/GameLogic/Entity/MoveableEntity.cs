@@ -46,12 +46,18 @@ namespace Miner.GameLogic
 
         public virtual float GenerateHp()
         {
-            return 0;
+            return Stats().hp;
         }
 
         public virtual int GeneratePoint()
         {
-            return 0;
+            return Stats().gold;
+        }
+
+        public AgentStats Stats()
+        {
+            string agent = config != null ? config.agentName : name;
+            return BaseConfig.GetAgentStats(agent);
         }
 
         //被击飞

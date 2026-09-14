@@ -22,6 +22,8 @@ namespace Miner.UI
         public Text pointText;
         public GameObject finalGo;
         public GameObject tutoisalGo;
+        public Text levelTipText;
+
 
         public GameObject afterGo;
         public Text resultTxt;
@@ -63,6 +65,27 @@ namespace Miner.UI
             hpAnim = hpChangeTxt.gameObject.GetComponent<Animator>();
             pointAnim = pointChangeTxt.gameObject.GetComponent<Animator>();
             ResetAnim();
+            RefreshLevelTip();
+        }
+
+
+        public static string FormatLevelTip(int collisionGoldLoss)
+        {
+            return "Forest explorer Enoki is foraging the natural lands for raw gold to become rich. In his hunt, he upset the forest God for disrupting the land, and now the hunt has gotten dangerous as the forest comes to life. Find out who is a friend and who is a foe as you collect as much gold as you can.\nAlways grab or block whatever comes your way — if you let anything slip past and hit you, you'll lose " + collisionGoldLoss + " gold points.";
+        }
+
+        private void RefreshLevelTip()
+        {
+            if (levelTipText == null)
+            {
+                return;
+            }
+            if (BaseConfig.agentStats.Count == 0)
+            {
+                BaseConfig.InitAgentStats(Application.dataPath + "/agent_stats.csv");
+            }
+            int loss = Mathf.Abs(BaseConfig.GetAgentStats("Collision").gold);
+            levelTipText.text = FormatLevelTip(loss);
         }
 
         private void ResetAnim()

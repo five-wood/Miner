@@ -9,15 +9,5 @@ namespace Miner.GameLogic
             return ResConst.rewardPath;
         }
 
-        public override float GenerateHp()
-        {
-            return 20;
-        }
-
-        public override int GeneratePoint()
-        {
-            return 20;
-        }
-        
     }
 }

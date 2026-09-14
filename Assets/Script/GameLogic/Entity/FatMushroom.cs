@@ -8,15 +8,6 @@ namespace Miner.GameLogic
         {
             return ResConst.fatMushroom;
         }
-        
-        public override float GenerateHp()
-        {
-            return 20;
-        }
 
-        public override int GeneratePoint()
-        {
-            return -20;
-        }
     }
 }

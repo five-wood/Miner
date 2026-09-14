@@ -9,15 +9,5 @@ namespace Miner.GameLogic
             return ResConst.tallMushroom;
         }
 
-        public override float GenerateHp()
-        {
-            return -20;
-        }
-
-        public override int GeneratePoint()
-        {
-            return 20;
-        }
-        
     }
 }

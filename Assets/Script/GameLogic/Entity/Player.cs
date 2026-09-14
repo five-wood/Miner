@@ -267,7 +267,7 @@ namespace Miner.GameLogic
             {
                 return;
             }
-            int pointChanged = -30;
+            int pointChanged = BaseConfig.GetAgentStats("Collision").gold;
             point += pointChanged;
             CombatMgr.Instance().ChangePoint(pointChanged);
             SessionLogger.Instance.MarkExited(entity.Id);
