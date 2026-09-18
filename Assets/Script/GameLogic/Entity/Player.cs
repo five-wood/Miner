@@ -244,10 +244,8 @@ namespace Miner.GameLogic
 
                 float hpChanged = entity.GenerateHp();
                 int pointChanged = entity.GeneratePoint();
-                float before = hp;
-                hp = Mathf.Clamp(hp + hpChanged, 0, 100);
-                int effectiveHp = Mathf.RoundToInt(hp - before);
-                CombatMgr.Instance().ChangeHp(effectiveHp);
+                float displayHp = ResolvePickupHp(hp, hpChanged, out hp, out int effectiveHp);
+                CombatMgr.Instance().ChangeHp(displayHp);
                 point += pointChanged;
                 CombatMgr.Instance().ChangePoint(pointChanged);
 
@@ -255,6 +253,13 @@ namespace Miner.GameLogic
                 bool dup = SessionLogger.Instance.IsDuplicateSpawn(entity.config != null ? entity.config.spawnId : "");
                 SessionLogger.Instance.Enqueue(CombatMgr.AgentEvent("hook_hit", entity, effectiveHp, pointChanged, true, dup));
             }
+        }
+
+        public static float ResolvePickupHp(float currentHp, float hpChanged, out float resultingHp, out int effectiveHp)
+        {
+            resultingHp = Mathf.Clamp(currentHp + hpChanged, 0, 100);
+            effectiveHp = Mathf.RoundToInt(resultingHp - currentHp);
+            return hpChanged > 0 ? hpChanged : effectiveHp;
         }
 
         public void OnHit(MoveableEntity entity)
@@ -267,12 +272,14 @@ namespace Miner.GameLogic
             {
                 return;
             }
-            int pointChanged = BaseConfig.GetAgentStats("Collision").gold;
-            point += pointChanged;
-            CombatMgr.Instance().ChangePoint(pointChanged);
+            AgentStats collisionStats = BaseConfig.GetAgentStats("Collision");
+            float displayHp = ResolvePickupHp(hp, collisionStats.hp, out hp, out int effectiveHp);
+            CombatMgr.Instance().ChangeHp(displayHp);
+            point += collisionStats.gold;
+            CombatMgr.Instance().ChangePoint(collisionStats.gold);
             SessionLogger.Instance.MarkExited(entity.Id);
             bool dup = SessionLogger.Instance.IsDuplicateSpawn(entity.config != null ? entity.config.spawnId : "");
-            SessionLogger.Instance.Enqueue(CombatMgr.AgentEvent("collision", entity, 0, pointChanged, true, dup));
+            SessionLogger.Instance.Enqueue(CombatMgr.AgentEvent("collision", entity, effectiveHp, collisionStats.gold, true, dup));
         }
 
         public void BeHurt(float damage, BaseEntity entity)

@@ -69,9 +69,38 @@ namespace Miner.UI
         }
 
 
+        public static string FormatLevelTip(float collisionHpChange, int collisionGoldChange)
+        {
+            string changeText = FormatCollisionChange("gold", collisionGoldChange);
+            string hpText = FormatCollisionChange("health", collisionHpChange);
+            if (!string.IsNullOrEmpty(changeText) && !string.IsNullOrEmpty(hpText))
+            {
+                changeText += " and " + hpText;
+            }
+            else if (!string.IsNullOrEmpty(hpText))
+            {
+                changeText = hpText;
+            }
+            if (string.IsNullOrEmpty(changeText))
+            {
+                changeText = "nothing";
+            }
+            return "Forest explorer Enoki is foraging the natural lands for raw gold to become rich. In his hunt, he upset the forest God for disrupting the land, and now the hunt has gotten dangerous as the forest comes to life. Find out who is a friend and who is a foe as you collect as much gold as you can.\n\nAlways grab or block whatever comes your way — if you let anything slip past and hit you, you'll " + changeText + ".";
+        }
+
+        private static string FormatCollisionChange(string label, float change)
+        {
+            if (Mathf.Approximately(change, 0))
+            {
+                return "";
+            }
+            string action = change < 0 ? "lose" : "gain";
+            return string.Format("{0} {1} {2}", action, Mathf.Abs(change), label + (label == "health" ? " points" : " points"));
+        }
+
         public static string FormatLevelTip(int collisionGoldLoss)
         {
-            return "Forest explorer Enoki is foraging the natural lands for raw gold to become rich. In his hunt, he upset the forest God for disrupting the land, and now the hunt has gotten dangerous as the forest comes to life. Find out who is a friend and who is a foe as you collect as much gold as you can.\nAlways grab or block whatever comes your way — if you let anything slip past and hit you, you'll lose " + collisionGoldLoss + " gold points.";
+            return FormatLevelTip(0, -Mathf.Abs(collisionGoldLoss));
         }
 
         private void RefreshLevelTip()
@@ -84,8 +113,8 @@ namespace Miner.UI
             {
                 BaseConfig.InitAgentStats(Application.dataPath + "/agent_stats.csv");
             }
-            int loss = Mathf.Abs(BaseConfig.GetAgentStats("Collision").gold);
-            levelTipText.text = FormatLevelTip(loss);
+            AgentStats collisionStats = BaseConfig.GetAgentStats("Collision");
+            levelTipText.text = FormatLevelTip(collisionStats.hp, collisionStats.gold);
         }
 
         private void ResetAnim()
