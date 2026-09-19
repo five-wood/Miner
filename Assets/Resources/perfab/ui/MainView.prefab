@@ -339,7 +339,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &4296691578341694418
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2590,7 +2590,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &4608322618044123242
 RectTransform:
   m_ObjectHideFlags: 0
@@ -3554,6 +3554,7 @@ MonoBehaviour:
   loseGo: {fileID: 6502705091303117294}
   loseTimerTxt: {fileID: 2608746165697994233}
   loseScoreTxt: {fileID: 7178704309278444368}
+  loseResultTxt: {fileID: 7738219161100275094}
 --- !u!1 &5610063752128026238
 GameObject:
   m_ObjectHideFlags: 0
@@ -3880,7 +3881,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &4990966580436113611
 RectTransform:
   m_ObjectHideFlags: 0
@@ -5098,7 +5099,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &6663129726201207005
 RectTransform:
   m_ObjectHideFlags: 0
