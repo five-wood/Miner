@@ -1,2 +1,0 @@
-# schema_version=v2
-second,participant_id,level,wave,spawn_id,agent_type,n_reward,n_threat,n_coactive_fat,n_coactive_tall,event_type,avatar_hp_delta,avatar_gold_delta,avatar_hp,avatar_gold,unix_timestamp,datetime,in_field,distance,warning
