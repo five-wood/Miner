@@ -116,7 +116,7 @@ namespace Miner.UI
             }
 
             return hasNextLevel
-                ? "No more agents remain. Moving to the next level."
+                ? "No agents remain this level. The level ends."
                 : "No more agents remain. Game over.";
         }
 
