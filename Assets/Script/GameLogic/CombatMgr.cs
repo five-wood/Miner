@@ -182,6 +182,11 @@ namespace Miner.GameLogic
             int dueThrough = FindLastDueConfigIndex(agentConfigs, lastIndex, currentTime);
             return HasFutureConfig(agentConfigs, dueThrough, currentTime);
         }
+        public static bool IsDeathVictory(List<AgentConfig> agentConfigs, int lastIndex, float currentTime)
+        {
+            return !ShouldContinueAfterDeathWait(agentConfigs, lastIndex, currentTime);
+        }
+
 
         private void BeginDeathWait()
         {
@@ -206,9 +211,10 @@ namespace Miner.GameLogic
             lastAgentIndex = FindLastDueConfigIndex(configs, lastAgentIndex, deathWaitEndTime);
             deathWaiting = false;
             deathWaitRemaining = 0f;
-            if (!ShouldContinueAfterDeathWait(configs, lastAgentIndex, deathWaitEndTime))
+            if (IsDeathVictory(configs, lastAgentIndex, deathWaitEndTime))
             {
-                FinishLevel(false);
+                player.point = 0;
+                FinishLevel(true);
                 return;
             }
             player.hp = 100;

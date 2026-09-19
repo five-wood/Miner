@@ -123,6 +123,21 @@ namespace Miner.Tests
             Assert.IsFalse(CombatMgr.ShouldContinueAfterDeathWait(configs, 0, 40f));
 
         }
+
+        [Test]
+        public void DeathWithoutRemainingAgentsIsVictory()
+        {
+            List<AgentConfig> configs = new List<AgentConfig>
+            {
+                new AgentConfig { totalTime = 10f },
+                new AgentConfig { totalTime = 20f },
+                new AgentConfig { totalTime = 40f }
+            };
+
+            Assert.IsFalse(CombatMgr.IsDeathVictory(configs, 0, 25f));
+            Assert.IsTrue(CombatMgr.IsDeathVictory(configs, 0, 45f));
+            Assert.IsTrue(CombatMgr.IsDeathVictory(configs, 0, 40f));
+        }
         [Test]
         public void DeathWaitReasonExplainsWhetherTheLevelWillContinue()
         {
