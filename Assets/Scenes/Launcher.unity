@@ -123,6 +123,11 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &121045015 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7212010621088116931, guid: 61e34f7a03c9eae4fbdfe2862c5a1dd0, type: 3}
+  m_PrefabInstance: {fileID: 872392828}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &185467792
 GameObject:
   m_ObjectHideFlags: 0
@@ -669,6 +674,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1301802569}
     m_Modifications:
+    - target: {fileID: 353978577766434280, guid: 61e34f7a03c9eae4fbdfe2862c5a1dd0, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 548059076996247904, guid: 61e34f7a03c9eae4fbdfe2862c5a1dd0, type: 3}
       propertyPath: m_IsActive
       value: 0
@@ -679,6 +688,10 @@ PrefabInstance:
         become rich. In his hunt, he upset the forest God for disrupting the land,
         and now the hunt has gotten dangerous as the forest comes to life. Find out
         who is a friend and who is a foe as you collect as much gold as you can.
+      objectReference: {fileID: 0}
+    - target: {fileID: 2887649568598535749, guid: 61e34f7a03c9eae4fbdfe2862c5a1dd0, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3177385017020878873, guid: 61e34f7a03c9eae4fbdfe2862c5a1dd0, type: 3}
       propertyPath: m_Color.b
@@ -692,6 +705,30 @@ PrefabInstance:
       propertyPath: m_Color.r
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 5590903979406477952, guid: 61e34f7a03c9eae4fbdfe2862c5a1dd0, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5590903979406477952, guid: 61e34f7a03c9eae4fbdfe2862c5a1dd0, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5590903979406477952, guid: 61e34f7a03c9eae4fbdfe2862c5a1dd0, type: 3}
+      propertyPath: m_AnchorMin.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5610063751894221072, guid: 61e34f7a03c9eae4fbdfe2862c5a1dd0, type: 3}
+      propertyPath: loseRole1
+      value: 
+      objectReference: {fileID: 121045015}
+    - target: {fileID: 5610063751894221072, guid: 61e34f7a03c9eae4fbdfe2862c5a1dd0, type: 3}
+      propertyPath: loseRole2
+      value: 
+      objectReference: {fileID: 1674439992}
+    - target: {fileID: 5610063751894221072, guid: 61e34f7a03c9eae4fbdfe2862c5a1dd0, type: 3}
+      propertyPath: curLevelTxt
+      value: 
+      objectReference: {fileID: 1254807750}
     - target: {fileID: 5610063751894221074, guid: 61e34f7a03c9eae4fbdfe2862c5a1dd0, type: 3}
       propertyPath: m_Name
       value: MainView
@@ -782,11 +819,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5635571045494827309, guid: 61e34f7a03c9eae4fbdfe2862c5a1dd0, type: 3}
       propertyPath: m_AnchorMax.x
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5635571045494827309, guid: 61e34f7a03c9eae4fbdfe2862c5a1dd0, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5925434592423760768, guid: 61e34f7a03c9eae4fbdfe2862c5a1dd0, type: 3}
       propertyPath: m_AnchoredPosition.x
@@ -795,6 +832,18 @@ PrefabInstance:
     - target: {fileID: 5925434592423760768, guid: 61e34f7a03c9eae4fbdfe2862c5a1dd0, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 19.449951
+      objectReference: {fileID: 0}
+    - target: {fileID: 7203231711832889509, guid: 61e34f7a03c9eae4fbdfe2862c5a1dd0, type: 3}
+      propertyPath: m_Color.b
+      value: 0.13705944
+      objectReference: {fileID: 0}
+    - target: {fileID: 7203231711832889509, guid: 61e34f7a03c9eae4fbdfe2862c5a1dd0, type: 3}
+      propertyPath: m_Color.g
+      value: 0.5398237
+      objectReference: {fileID: 0}
+    - target: {fileID: 7203231711832889509, guid: 61e34f7a03c9eae4fbdfe2862c5a1dd0, type: 3}
+      propertyPath: m_Color.r
+      value: 0.8301887
       objectReference: {fileID: 0}
     - target: {fileID: 7815897054212451488, guid: 61e34f7a03c9eae4fbdfe2862c5a1dd0, type: 3}
       propertyPath: m_AnchoredPosition.x
@@ -826,6 +875,17 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 61e34f7a03c9eae4fbdfe2862c5a1dd0, type: 3}
+--- !u!114 &1254807750 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7203231711832889509, guid: 61e34f7a03c9eae4fbdfe2862c5a1dd0, type: 3}
+  m_PrefabInstance: {fileID: 872392828}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1301802565
 GameObject:
   m_ObjectHideFlags: 0
@@ -963,6 +1023,11 @@ Transform:
   m_Father: {fileID: 816223023}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1674439992 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7054984251005380817, guid: 61e34f7a03c9eae4fbdfe2862c5a1dd0, type: 3}
+  m_PrefabInstance: {fileID: 872392828}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1986567157
 GameObject:
   m_ObjectHideFlags: 0

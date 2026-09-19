@@ -46,6 +46,10 @@ namespace Miner.UI
         private float loseTimer = 0;
         private float winTimer = 0;
         public Text loseResultTxt;
+        public Text curLevelTxt;
+
+        public GameObject loseRole1;
+        public GameObject loseRole2;
 
         private int _level = 1;
 
@@ -110,6 +114,7 @@ namespace Miner.UI
             {
                 return "Try Again in ...";
             }
+
             return hasNextLevel
                 ? "No more agents remain. Moving to the next level."
                 : "No more agents remain. Game over.";
@@ -161,6 +166,7 @@ namespace Miner.UI
             }
             XLogger.Info(string.Format("========Start Game Run:{0}==========", lv));
             this._level = lv;
+            curLevelTxt.text="Level "+lv;
             CombatMgr.Instance().LoadGame(this._level);
             beforeGo.SetActive(false);
             tutoisalGo.SetActive(false);
@@ -168,6 +174,9 @@ namespace Miner.UI
             afterGo.SetActive(false);
             hpChangeTxt.text = "";
             pointChangeTxt.text = "";
+            hpChangeTxt.gameObject.SetActive(false);
+            pointChangeTxt.gameObject.SetActive(false);
+
             
             // 发送关卡开始消息
             SocketManager.Instance.SendLevelStart(lv);
@@ -218,6 +227,8 @@ namespace Miner.UI
         public void ShowDeathWait(int point, bool hasFutureAgents)
         {
             OnGameOver(false, false, point);
+            loseRole1.SetActive(hasFutureAgents);
+            loseRole2.SetActive(!hasFutureAgents);
             loseResultTxt.text = FormatDeathWaitReason(hasFutureAgents, this._level < BaseConfig.maxLevel);
             loseTimerTxt.text = "5 seconds";
         }
@@ -296,6 +307,7 @@ namespace Miner.UI
             {
                 str = "<color=\"#00ee00\">+{0}</color>";
             }
+            hpChangeTxt.gameObject.SetActive(true);
             hpChangeTxt.enabled = true;
             hpChangeTxt.text = string.Format(str, (int)(Mathf.Abs(value)));
             hpAnim.enabled = true;
@@ -314,6 +326,7 @@ namespace Miner.UI
 
         private void JumpPoint(int curValue)
         {
+            pointChangeTxt.gameObject.SetActive(true);
             pointChangeTxt.enabled = true;
             if (curValue > 0)
             {
