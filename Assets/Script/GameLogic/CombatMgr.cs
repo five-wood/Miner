@@ -21,6 +21,7 @@ namespace Miner.GameLogic
         private bool pause = false;
         private bool deathWaiting = false;
         private float deathWaitRemaining = 0f;
+        private float deathWaitEndTime = 0f;
         private int deathGold = 0;
         private const float DeathWaitDuration = 5f;
 
@@ -176,21 +177,24 @@ namespace Miner.GameLogic
             return lastIndex < agentConfigs.Count - 1
                 && agentConfigs[lastIndex + 1].totalTime > currentTime;
         }
+        public static bool ShouldContinueAfterDeathWait(List<AgentConfig> agentConfigs, int lastIndex, float currentTime)
+        {
+            int dueThrough = FindLastDueConfigIndex(agentConfigs, lastIndex, currentTime);
+            return HasFutureConfig(agentConfigs, dueThrough, currentTime);
+        }
 
         private void BeginDeathWait()
         {
             deathGold = player.point;
             SessionLogger.Instance.FlushPendingEvents(0, deathGold, new List<AgentSnapshot>());
             ClearAgents();
-            if (!HasFutureConfig(BaseConfig.GetLevelConfig(level), lastAgentIndex, gameTime))
-            {
-                FinishLevel(false);
-                return;
-            }
+            deathWaitEndTime = gameTime + DeathWaitDuration;
+            bool hasFutureAgents = ShouldContinueAfterDeathWait(
+                BaseConfig.GetLevelConfig(level), lastAgentIndex, deathWaitEndTime);
             deathWaiting = true;
             if (mainView != null)
             {
-                mainView.OnGameOver(false, false, deathGold);
+                mainView.ShowDeathWait(deathGold, hasFutureAgents);
             }
             deathWaitRemaining = DeathWaitDuration;
         }
@@ -198,16 +202,17 @@ namespace Miner.GameLogic
         private void CompleteDeathWait()
         {
             List<AgentConfig> configs = BaseConfig.GetLevelConfig(level);
-            lastAgentIndex = FindLastDueConfigIndex(configs, lastAgentIndex, gameTime);
-            player.hp = 100;
-            player.point = 0;
+            gameTime = deathWaitEndTime;
+            lastAgentIndex = FindLastDueConfigIndex(configs, lastAgentIndex, deathWaitEndTime);
             deathWaiting = false;
             deathWaitRemaining = 0f;
-            if (!HasFutureConfig(configs, lastAgentIndex, gameTime))
+            if (!ShouldContinueAfterDeathWait(configs, lastAgentIndex, deathWaitEndTime))
             {
                 FinishLevel(false);
                 return;
             }
+            player.hp = 100;
+            player.point = 0;
             if (mainView != null)
             {
                 mainView.ShowGameplayAfterDeathWait();

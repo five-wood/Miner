@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.IO;
 using NUnit.Framework;
 using Miner.GameLogic;
-
+using Miner.UI;
 namespace Miner.Tests
 {
     public class DeathRecoveryTests
@@ -107,6 +107,28 @@ namespace Miner.Tests
 
             Assert.IsTrue(CombatMgr.HasFutureConfig(configs, 0, 106f));
             Assert.IsFalse(CombatMgr.HasFutureConfig(configs, 1, 112f));
+        }
+        [Test]
+        public void ContinuesOnlyWhenAnAgentRemainsAfterDeathWait()
+        {
+            List<AgentConfig> configs = new List<AgentConfig>
+            {
+                new AgentConfig { totalTime = 10f },
+                new AgentConfig { totalTime = 20f },
+                new AgentConfig { totalTime = 40f }
+            };
+
+            Assert.IsTrue(CombatMgr.ShouldContinueAfterDeathWait(configs, 0, 25f));
+            Assert.IsFalse(CombatMgr.ShouldContinueAfterDeathWait(configs, 0, 45f));
+            Assert.IsFalse(CombatMgr.ShouldContinueAfterDeathWait(configs, 0, 40f));
+
+        }
+        [Test]
+        public void DeathWaitReasonExplainsWhetherTheLevelWillContinue()
+        {
+            Assert.AreEqual("Try Again in ...", MainView.FormatDeathWaitReason(true, true));
+            Assert.AreEqual("No more agents remain. Moving to the next level.", MainView.FormatDeathWaitReason(false, true));
+            Assert.AreEqual("No more agents remain. Game over.", MainView.FormatDeathWaitReason(false, false));
         }
 
 

@@ -45,6 +45,7 @@ namespace Miner.UI
         public Text loseScoreTxt;
         private float loseTimer = 0;
         private float winTimer = 0;
+        public Text loseResultTxt;
 
         private int _level = 1;
 
@@ -101,6 +102,17 @@ namespace Miner.UI
         public static string FormatLevelTip(int collisionGoldLoss)
         {
             return FormatLevelTip(0, -Mathf.Abs(collisionGoldLoss));
+        }
+
+        public static string FormatDeathWaitReason(bool hasFutureAgents, bool hasNextLevel)
+        {
+            if (hasFutureAgents)
+            {
+                return "Try Again in ...";
+            }
+            return hasNextLevel
+                ? "No more agents remain. Moving to the next level."
+                : "No more agents remain. Game over.";
         }
 
         private void RefreshLevelTip()
@@ -203,6 +215,12 @@ namespace Miner.UI
                 }
             }
         }
+        public void ShowDeathWait(int point, bool hasFutureAgents)
+        {
+            OnGameOver(false, false, point);
+            loseResultTxt.text = FormatDeathWaitReason(hasFutureAgents, this._level < BaseConfig.maxLevel);
+            loseTimerTxt.text = "5 seconds";
+        }
         public void ShowGameplayAfterDeathWait()
         {
             beforeGo.SetActive(false);
@@ -214,7 +232,9 @@ namespace Miner.UI
 
         public void HandleTerminalFailure(int failedLevel, int score)
         {
-            if (failedLevel < BaseConfig.maxLevel)
+            bool hasNextLevel = failedLevel < BaseConfig.maxLevel;
+            loseResultTxt.text = FormatDeathWaitReason(false, hasNextLevel);
+            if (hasNextLevel)
             {
                 CombatMgr.Instance().RealExitGame();
                 StartGameByLv(failedLevel + 1);
